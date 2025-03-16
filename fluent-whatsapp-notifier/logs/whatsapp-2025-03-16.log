@@ -1,0 +1,48 @@
+[2025-03-16 15:34:35] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":null}
+[2025-03-16 15:34:35] [ERROR]: Error saat mengirim notifikasi {"error":"cURL error 7: Failed to connect to localhost port 3000 after 0 ms: Could not connect to server"}
+[2025-03-16 15:34:46] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":null}
+[2025-03-16 15:34:46] [ERROR]: Error saat mengirim notifikasi {"error":"cURL error 7: Failed to connect to localhost port 3000 after 0 ms: Could not connect to server"}
+[2025-03-16 15:49:48] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":null}
+[2025-03-16 15:49:49] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB070BDC5DFE5C08AC9A4"}}
+[2025-03-16 15:50:21] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":null}
+[2025-03-16 15:50:21] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB0640FDEA972BC8970B3"}}
+[2025-03-16 16:00:16] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":null}
+[2025-03-16 16:00:17] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB0DA68FC257EF291799C"}}
+[2025-03-16 16:17:00] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":null}
+[2025-03-16 16:17:01] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB05E94FE72E726BCCF16"}}
+[2025-03-16 16:17:26] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 16:17:26] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB01AA063F618F6D62E89"}}
+[2025-03-16 16:47:18] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":null}
+[2025-03-16 16:47:18] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB0A47A40A6531A74C8A4"}}
+[2025-03-16 16:47:41] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 16:47:42] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB0EE3B1C020F2F0C105D"}}
+[2025-03-16 16:59:53] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 16:59:55] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB0BCCBEEFC678FA3AE0B"}}
+[2025-03-16 17:00:40] [INFO]: Nomor telepon berbentuk array, menggunakan nilai: Hanreiy 
+[2025-03-16 17:00:40] [ERROR]: Format nomor penerima tidak valid 
+[2025-03-16 17:02:36] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 17:02:36] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB04DC68C8F8C19405E59"}}
+[2025-03-16 17:03:50] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":null}
+[2025-03-16 17:03:50] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB0FEB6AB6F89D73A8045"}}
+[2025-03-16 17:11:32] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 17:11:33] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB0A6947C4D101E8283FC"}}
+[2025-03-16 17:12:17] [INFO]: Nomor telepon berbentuk array, menggunakan nilai: Hanreiy 
+[2025-03-16 17:12:17] [ERROR]: Format nomor penerima tidak valid 
+[2025-03-16 17:13:56] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 17:13:58] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB096B61D2334073EB721"}}
+[2025-03-16 17:26:08] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 17:26:10] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB043A2550B603DF11B8C"}}
+[2025-03-16 17:28:28] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 17:28:29] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB0A2678AAFBE6B4F141C"}}
+[2025-03-16 18:09:31] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":null}
+[2025-03-16 18:09:31] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB0C548A96CB5A2A49BBE"}}
+[2025-03-16 18:11:59] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 18:12:00] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB01ABAF5E87779614C79"}}
+[2025-03-16 18:12:11] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 18:12:12] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB039D9FC79749A8DF986"}}
+[2025-03-16 18:12:22] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 18:12:22] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB0664D252DAE0D2B47AE"}}
+[2025-03-16 18:13:16] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 18:13:19] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB06984C9E7962E82EC85"}}
+[2025-03-16 18:37:59] [INFO]: Mengirim notifikasi WhatsApp {"recipient":"+6282116086024","form_id":3}
+[2025-03-16 18:38:02] [INFO]: Notifikasi berhasil dikirim {"response":{"sukses":true,"pesan":"Notifikasi WhatsApp terkirim!","id":"3EB061D9FD3384152AECE9"}}

@@ -3,7 +3,7 @@
  * Plugin Name: Fluent Forms WhatsApp Notifier
  * Description: Kirim notifikasi WhatsApp saat formulir Fluent Forms disubmit
  * Version: 1.0.0
- * Author: Pengembang
+ * Author: Exernia
  * Text Domain: fluent-whatsapp-notifier
  * Domain Path: /languages
  */
@@ -48,10 +48,11 @@ function fluentwa_deactivate() {
 register_deactivation_hook(__FILE__, 'fluentwa_deactivate');
 
 // Muat file yang diperlukan
-require_once FLUENTWA_PLUGIN_DIR . 'includes/class-logger.php';
+require_once FLUENTWA_PLUGIN_DIR . 'includes/class-validator.php';
+require_once FLUENTWA_PLUGIN_DIR . 'includes/class-admin.php';
 require_once FLUENTWA_PLUGIN_DIR . 'includes/class-api.php';
 require_once FLUENTWA_PLUGIN_DIR . 'includes/class-form-handler.php';
-require_once FLUENTWA_PLUGIN_DIR . 'includes/class-admin.php';
+require_once FLUENTWA_PLUGIN_DIR . 'includes/class-logger.php';
 
 // Inisialisasi plugin
 function fluentwa_init() {

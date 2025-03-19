@@ -64,27 +64,36 @@ $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
                 </div>
             </label>
             
-            <label class="fluentwa-radio">
-                <input type="radio" name="recipient_mode" value="dynamic" 
-                       <?php checked(isset($form_settings['recipient_mode']) ? $form_settings['recipient_mode'] : '', 'dynamic'); ?>
-                       class="recipient-mode-selector">
-                <span><?php _e('Ambil dari Field Formulir', 'fluent-whatsapp-notifier'); ?></span>
-                <div class="recipient-mode-settings recipient-dynamic-settings" style="<?php echo (isset($form_settings['recipient_mode']) && $form_settings['recipient_mode'] === 'dynamic') ? '' : 'display: none;'; ?>">
-                    <select name="recipient_field" class="fluentwa-select">
-                        <option value=""><?php _e('-- Pilih Field --', 'fluent-whatsapp-notifier'); ?></option>
-                        <?php if (empty($phone_fields)): ?>
-                            <option value="" disabled><?php _e('Tidak ada field telepon dalam formulir ini', 'fluent-whatsapp-notifier'); ?></option>
-                        <?php else: ?>
-                            <?php foreach ($phone_fields as $field): ?>
-                            <option value="<?php echo esc_attr($field['name']); ?>" <?php selected(isset($form_settings['recipient_field']) ? $form_settings['recipient_field'] : '', $field['name']); ?>>
-                                <?php echo esc_html($field['label']); ?>
-                            </option>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </select>
-                    <p class="fluentwa-help-text"><?php _e('Pilih field formulir yang berisi nomor WhatsApp penerima.', 'fluent-whatsapp-notifier'); ?></p>
-                </div>
-            </label>
+            <!-- Opsi "Ambil dari Field Formulir" -->
+<label class="fluentwa-radio <?php echo empty($phone_fields) ? 'fluentwa-radio-disabled' : ''; ?>">
+    <input type="radio" name="recipient_mode" value="dynamic" 
+           <?php checked(isset($form_settings['recipient_mode']) ? $form_settings['recipient_mode'] : '', 'dynamic'); ?>
+           class="recipient-mode-selector"
+           <?php echo empty($phone_fields) ? 'disabled' : ''; ?>>
+    <span><?php _e('Ambil dari Field Formulir', 'fluent-whatsapp-notifier'); ?></span>
+    
+    <?php if (empty($phone_fields)): ?>
+    <span class="fluentwa-option-tooltip" title="<?php _e('Opsi ini tidak tersedia karena tidak ada field telepon di formulir ini', 'fluent-whatsapp-notifier'); ?>">
+        <span class="dashicons dashicons-info"></span>
+    </span>
+    <?php endif; ?>
+    
+    <div class="recipient-mode-settings recipient-dynamic-settings" style="<?php echo (isset($form_settings['recipient_mode']) && $form_settings['recipient_mode'] === 'dynamic') ? '' : 'display: none;'; ?>">
+        <select name="recipient_field" class="fluentwa-select">
+            <option value=""><?php _e('-- Pilih Field --', 'fluent-whatsapp-notifier'); ?></option>
+            <?php if (empty($phone_fields)): ?>
+                <option value="" disabled><?php _e('Tidak ada field telepon dalam formulir ini', 'fluent-whatsapp-notifier'); ?></option>
+            <?php else: ?>
+                <?php foreach ($phone_fields as $field): ?>
+                <option value="<?php echo esc_attr($field['name']); ?>" <?php selected(isset($form_settings['recipient_field']) ? $form_settings['recipient_field'] : '', $field['name']); ?>>
+                    <?php echo esc_html($field['label']); ?>
+                </option>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </select>
+        <p class="fluentwa-help-text"><?php _e('Pilih field formulir yang berisi nomor WhatsApp penerima.', 'fluent-whatsapp-notifier'); ?></p>
+    </div>
+</label>
         </div>
     </div>
 </div>
@@ -176,16 +185,18 @@ $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
                                 <td><?php echo esc_html($form->title); ?></td>
                                 <td><?php echo esc_html($form->id); ?></td>
                                 <td>
-                                    <?php if ($is_enabled): ?>
-                                        <span class="fluentwa-status fluentwa-status-active">
-                                            <?php _e('Aktif', 'fluent-whatsapp-notifier'); ?>
-                                        </span>
-                                    <?php else: ?>
-                                        <span class="fluentwa-status fluentwa-status-inactive">
-                                            <?php _e('Tidak Aktif', 'fluent-whatsapp-notifier'); ?>
-                                        </span>
-                                    <?php endif; ?>
-                                </td>
+    <label class="fluentwa-toggle">
+        <input type="checkbox" class="fluentwa-status-toggle" 
+               data-form-id="<?php echo esc_attr($form->id); ?>" 
+               <?php checked($is_enabled); ?>>
+        <span class="fluentwa-toggle-slider"></span>
+        <span class="fluentwa-toggle-status">
+            <?php echo $is_enabled ? 
+                esc_html__('Aktif', 'fluent-whatsapp-notifier') : 
+                esc_html__('Tidak Aktif', 'fluent-whatsapp-notifier'); ?>
+        </span>
+    </label>
+</td>
                                 <td>
                                     <a href="?page=fluent-whatsapp-notifier&tab=form_settings&form_id=<?php echo $form->id; ?>" 
                                        class="button button-small">

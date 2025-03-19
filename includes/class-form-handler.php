@@ -30,7 +30,7 @@ class FluentWA_Form_Handler {
         }
         
         // Tentukan penerima menggunakan fungsi helper
-$recipient = $this->get_recipient($form_settings, $entry_data);
+        $recipient = $this->get_recipient($form_settings, $form_data);
         
         if (empty($recipient)) {
             $this->logger->error("Nomor tujuan tidak ditemukan untuk form #{$form_id}");
@@ -61,40 +61,40 @@ $recipient = $this->get_recipient($form_settings, $entry_data);
     }
     
     /**
- * Tentukan nomor penerima berdasarkan pengaturan
- *
- * @param array $form_settings Pengaturan formulir
- * @param array $entry_data Data entri formulir
- * @return string Nomor penerima yang akan digunakan
- */
-private function get_recipient($form_settings, $entry_data) {
-    $global_settings = get_option('fluentwa_settings', array());
-    $default_recipient = isset($global_settings['default_recipient']) ? $global_settings['default_recipient'] : '';
-    
-    $mode = isset($form_settings['recipient_mode']) ? $form_settings['recipient_mode'] : 'default';
-    
-    switch ($mode) {
-        case 'manual':
-            // Gunakan nomor manual dari pengaturan formulir
-            return !empty($form_settings['recipient']) ? $form_settings['recipient'] : $default_recipient;
-            
-        case 'dynamic':
-            // Ambil dari field formulir
-            $field_name = isset($form_settings['recipient_field']) ? $form_settings['recipient_field'] : '';
-            
-            if (!empty($field_name) && isset($entry_data[$field_name])) {
-                return $entry_data[$field_name];
-            }
-            
-            // Fallback ke default jika field kosong
-            return $default_recipient;
-            
-        case 'default':
-        default:
-            // Gunakan nomor default
-            return $default_recipient;
+     * Tentukan nomor penerima berdasarkan pengaturan
+     *
+     * @param array $form_settings Pengaturan formulir
+     * @param array $entry_data Data entri formulir
+     * @return string Nomor penerima yang akan digunakan
+     */
+    private function get_recipient($form_settings, $entry_data) {
+        $global_settings = get_option('fluentwa_settings', array());
+        $default_recipient = $global_settings['default_recipient'] ?? '';
+        
+        $mode = $form_settings['recipient_mode'] ?? 'default';
+        
+        switch ($mode) {
+            case 'manual':
+                // Gunakan nomor manual dari pengaturan formulir
+                return $form_settings['recipient'] ?? $default_recipient;
+                
+            case 'dynamic':
+                // Ambil dari field formulir
+                $field_name = $form_settings['recipient_field'] ?? '';
+                
+                if (!empty($field_name) && isset($entry_data[$field_name])) {
+                    return $entry_data[$field_name];
+                }
+                
+                // Fallback ke default jika field kosong
+                return $default_recipient;
+                
+            case 'default':
+            default:
+                // Gunakan nomor default
+                return $default_recipient;
+        }
     }
-}
     
     /**
      * Bangun pesan notifikasi dari template

@@ -7,11 +7,18 @@ if (!defined('ABSPATH')) {
 class FluentWA_Logger {
     private $log_enabled;
     private $log_file;
+    private $timezone;
     
     public function __construct() {
         $settings = get_option('fluentwa_settings', array());
         $this->log_enabled = isset($settings['enable_logging']) ? $settings['enable_logging'] : false;
-        $this->log_file = FLUENTWA_PLUGIN_DIR . 'logs/whatsapp-' . date('Y-m-d') . '.log';
+        
+        // Set timezone untuk Indonesia/Jakarta (UTC+7)
+        $this->timezone = new DateTimeZone('Asia/Jakarta');
+        
+        // Gunakan DateTime dengan zona waktu Jakarta untuk nama file
+        $date = new DateTime('now', $this->timezone);
+        $this->log_file = FLUENTWA_PLUGIN_DIR . 'logs/whatsapp-' . $date->format('Y-m-d') . '.log';
     }
     
     /**
@@ -36,9 +43,12 @@ class FluentWA_Logger {
             return;
         }
         
+        // Gunakan DateTime dengan zona waktu Jakarta untuk timestamp log
+        $date = new DateTime('now', $this->timezone);
+        
         $log_entry = sprintf(
             "[%s] [%s]: %s %s\n",
-            date('Y-m-d H:i:s'),
+            $date->format('Y-m-d H:i:s'),
             $level,
             $message,
             !empty($data) ? json_encode($data) : ''

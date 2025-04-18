@@ -118,6 +118,8 @@ class FluentWA_Validator
             return $result;
         }
 
+        // Hapus trailing slash jika ada
+        $result['formatted'] = rtrim($url, '/');
         $result['is_valid'] = true;
         return $result;
     }
@@ -156,6 +158,40 @@ class FluentWA_Validator
             // Ini hanya peringatan, bukan error fatal
             $result['is_warning'] = true;
         }
+
+        $result['is_valid'] = true;
+        return $result;
+    }
+
+    /**
+     * Validasi token akses/autentikasi
+     * 
+     * @param string $token Token yang akan divalidasi
+     * @return array Hasil validasi dengan status, pesan, dan token yang diformat
+     */
+    public static function validate_access_token($token)
+    {
+        $token = trim($token);
+        $result = [
+            'is_valid' => false,
+            'message' => '',
+            'formatted' => $token
+        ];
+
+        // Cek apakah kosong
+        if (empty($token)) {
+            $result['message'] = __('Token autentikasi tidak boleh kosong', 'fluent-whatsapp-notifier');
+            return $result;
+        }
+
+        // Hanya validasi panjang minimum dan hapus regex yang terlalu ketat
+        if (strlen($token) < 6) {
+            $result['message'] = __('Token autentikasi terlalu pendek, minimal 6 karakter', 'fluent-whatsapp-notifier');
+            return $result;
+        }
+
+        // Hilangkan validasi karakter yang terlalu ketat
+        // Biarkan semua karakter non-spasi diizinkan
 
         $result['is_valid'] = true;
         return $result;

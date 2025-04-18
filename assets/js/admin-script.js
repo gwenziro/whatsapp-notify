@@ -139,6 +139,35 @@
       result.isValid = true;
       return result;
     },
+
+    /**
+     * Validasi token akses/autentikasi
+     * @param {string} token Token yang akan divalidasi
+     * @returns {object} Hasil validasi
+     */
+    validateAccessToken: function (token) {
+      token = token.trim();
+      const result = {
+        isValid: false,
+        message: "",
+        formatted: token,
+      };
+
+      // Cek apakah kosong
+      if (!token) {
+        result.message = "Token autentikasi tidak boleh kosong";
+        return result;
+      }
+
+      // Hanya validasi panjang minimum - hapus regex yang terlalu ketat
+      if (token.length < 6) {
+        result.message = "Token autentikasi terlalu pendek, minimal 6 karakter";
+        return result;
+      }
+
+      result.isValid = true;
+      return result;
+    },
   };
 
   // DOM Ready
@@ -443,6 +472,10 @@
       .text(fluentWA.i18n.saving)
       .prop("disabled", true);
 
+    // Hapus semua error yang ada sebelumnya
+    $form.find(".fluentwa-field-error").remove();
+    $form.find(".fluentwa-form-input").removeClass("has-error");
+
     // Format nomor WhatsApp sebelum mengirim
     const recipientValue = $form.find("#default_recipient").val();
     const recipientValidation =
@@ -455,7 +488,8 @@
       action: "fluentwa_save_settings",
       nonce: fluentWA.nonce,
       api_url: $form.find("#api_url").val(),
-      default_recipient: formattedRecipient, // Gunakan nomor yang sudah diformat
+      access_token: $form.find("#access_token").val(),
+      default_recipient: formattedRecipient,
       default_template: $form.find("#default_template").val(),
       enable_logging: $form.find("#enable_logging").is(":checked"),
     };
@@ -469,18 +503,57 @@
         ); // Update data awal
         updateDirtyStateIndicator();
       } else {
+        // Tampilkan pesan error umum
         showNotification("error", response.data.message);
+        
+        // Tampilkan error per field jika ada
+        if (response.data.errors) {
+          displayFieldErrors($form, response.data.errors);
+          
+          // Fokus ke field error pertama
+          $form.find(".fluentwa-form-input.has-error")
+            .first()
+            .find("input, textarea, select")
+            .focus();
+        }
       }
 
       $form.find(".fluentwa-submit-btn").text(btnText).prop("disabled", false);
-    }).fail(function () {
+    }).fail(function (xhr, status, error) {
+      console.error("AJAX error:", status, error, xhr.responseText);
       showNotification("error", "Terjadi kesalahan server. Silakan coba lagi.");
       $form.find(".fluentwa-submit-btn").text(btnText).prop("disabled", false);
     });
   }
 
   /**
-   * Save form settings via AJAX - VERSI YANG LEBIH SEDERHANA
+   * Tampilkan error per field dari response server
+   * @param {jQuery} $form Form yang berisi field-field
+   * @param {Object} errors Object berisi error per field (field_name: error_message)
+   */
+  function displayFieldErrors($form, errors) {
+    // Loop melalui semua error
+    for (const fieldName in errors) {
+      if (errors.hasOwnProperty(fieldName)) {
+        const errorMessage = errors[fieldName];
+        const $field = $form.find(`#${fieldName}`);
+        
+        if ($field.length) {
+          // Tambahkan kelas error pada container
+          const $container = $field.closest(".fluentwa-form-input");
+          $container.addClass("has-error");
+          
+          // Tambahkan pesan error di bawah field
+          $field.after('<div class="fluentwa-field-error">' + errorMessage + '</div>');
+          
+          console.log(`Error pada field ${fieldName}: ${errorMessage}`);
+        }
+      }
+    }
+  }
+
+  /**
+   * Save form settings via AJAX
    */
   function saveFormSettings($form) {
     const formId = $form.data("form-id");
@@ -545,12 +618,25 @@
         );
         updateDirtyStateIndicator();
       } else {
+        // Tampilkan pesan error umum
         showNotification("error", response.data.message);
+        
+        // Tampilkan error per field jika ada
+        if (response.data.errors) {
+          displayFieldErrors($form, response.data.errors);
+          
+          // Fokus ke field error pertama
+          $form.find(".fluentwa-form-input.has-error")
+            .first()
+            .find("input, textarea, select")
+            .focus();
+        }
       }
 
       $form.find(".fluentwa-submit-btn").text(btnText).prop("disabled", false);
     }).fail(function (xhr, status, error) {
       console.error("Save form settings failed:", status, error);
+      console.log("Response text:", xhr.responseText);
       showNotification("error", "Terjadi kesalahan server. Silakan coba lagi.");
       $form.find(".fluentwa-submit-btn").text(btnText).prop("disabled", false);
     });
@@ -1262,6 +1348,11 @@
       validateField($(this), FluentWAValidator.validateApiUrl);
     });
 
+    // Validasi Token Autentikasi
+    $("#access_token").on("blur", function () {
+      validateField($(this), FluentWAValidator.validateAccessToken);
+    });
+
     // Validasi Nomor WhatsApp Default
     $("#default_recipient").on("blur", function () {
       const result = validateField(
@@ -1301,6 +1392,13 @@
         FluentWAValidator.validateApiUrl
       );
       if (!apiUrlResult.isValid) isValid = false;
+
+      // Validasi Token Autentikasi
+      const tokenResult = validateField(
+        $("#access_token"),
+        FluentWAValidator.validateAccessToken
+      );
+      if (!tokenResult.isValid) isValid = false;
 
       // Validasi Nomor WhatsApp Default
       const recipientResult = validateField(

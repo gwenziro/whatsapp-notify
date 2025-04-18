@@ -6,11 +6,6 @@ if (!defined('ABSPATH')) {
 
 class FluentWA_Admin
 {
-    // Konstanta untuk mode penerima
-    const RECIPIENT_MODE_DEFAULT = 'default';
-    const RECIPIENT_MODE_MANUAL = 'manual';
-    const RECIPIENT_MODE_DYNAMIC = 'dynamic';
-
     private $api;
     private $logger;
 
@@ -84,7 +79,7 @@ class FluentWA_Admin
         wp_localize_script('fluentwa-admin-script', 'fluentWA', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('fluentwa_admin_nonce'),
-            'settings_url' => admin_url('admin.php?page=fluent-whatsapp-notifier'), // Tambah ini
+            'settings_url' => admin_url('admin.php?page=fluent-whatsapp-notifier'),
             'i18n' => array(
                 'success' => __('Berhasil!', 'fluent-whatsapp-notifier'),
                 'error' => __('Error!', 'fluent-whatsapp-notifier'),
@@ -116,13 +111,13 @@ class FluentWA_Admin
      */
     private function render_general_settings()
     {
-        $settings = get_option('fluentwa_settings', array());
+        $settings = get_option(FluentWA_Constants::SETTINGS_OPTION_KEY, array());
 
         $api_url = isset($settings['api_url']) ? esc_url($settings['api_url']) : '';
         $default_recipient = isset($settings['default_recipient']) ? sanitize_text_field($settings['default_recipient']) : '';
-        $default_template = isset($settings['default_template']) ? $settings['default_template'] :
-            "🔔 *Ada pengisian formulir baru!*\n\nFormulir: {form_name}\nWaktu: {submission_date}\n\n{form_data}";
+        $default_template = isset($settings['default_template']) ? $settings['default_template'] : FluentWA_Constants::DEFAULT_TEMPLATE;
         $enable_logging = isset($settings['enable_logging']) ? (bool) $settings['enable_logging'] : false;
+        $access_token = isset($settings['access_token']) ? sanitize_text_field($settings['access_token']) : '';
 
         // Tampilkan form pengaturan
 ?>
@@ -136,9 +131,21 @@ class FluentWA_Admin
                     <div class="fluentwa-form-input">
                         <input type="url" id="api_url" name="api_url" class="fluentwa-input"
                             value="<?php echo esc_attr($api_url); ?>"
-                            placeholder="http://server-anda.com:3000/kirim-notifikasi" required>
+                            placeholder="http://server-anda.com:3000" required>
                         <p class="fluentwa-help-text">
-                            <?php _e('URL endpoint API bot WhatsApp Anda yang menangani pengiriman pesan.', 'fluent-whatsapp-notifier'); ?>
+                            <?php _e('Masukkan URL dasar (base URL) API bot WhatsApp Anda tanpa endpoint dan tanpa garis miring di akhir. Contoh: http://server-anda.com:3000', 'fluent-whatsapp-notifier'); ?>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="fluentwa-form-row">
+                    <label for="access_token"><?php _e('Token Autentikasi', 'fluent-whatsapp-notifier'); ?></label>
+                    <div class="fluentwa-form-input">
+                        <input type="text" id="access_token" name="access_token" class="fluentwa-input"
+                            value="<?php echo esc_attr($access_token); ?>"
+                            placeholder="f4d3b6a2e1c9" required>
+                        <p class="fluentwa-help-text">
+                            <?php _e('Token keamanan untuk autentikasi dengan API bot WhatsApp. Token dapat berisi huruf, angka, dan beberapa karakter khusus.', 'fluent-whatsapp-notifier'); ?>
                         </p>
                     </div>
                 </div>
@@ -198,21 +205,69 @@ class FluentWA_Admin
     }
 
     /**
-     * AJAX handler untuk memeriksa kelengkapan konfigurasi
+     * AJAX handler untuk menyimpan pengaturan umum
      */
-    public function ajax_check_configuration()
+    public function ajax_save_settings()
     {
         // Cek nonce untuk keamanan
         if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'fluentwa_admin_nonce')) {
             wp_send_json_error(['message' => 'Permintaan tidak sah.']);
         }
 
-        $config_status = $this->check_core_configuration();
+        $errors = [];
 
+        // Validasi URL API
+        $api_url = isset($_POST['api_url']) ? $_POST['api_url'] : '';
+        $api_url_validation = FluentWA_Validator::validate_api_url($api_url);
+        if (!$api_url_validation['is_valid']) {
+            $errors['api_url'] = $api_url_validation['message'];
+        }
+
+        // Validasi Token Autentikasi
+        $access_token = isset($_POST['access_token']) ? $_POST['access_token'] : '';
+        $token_validation = FluentWA_Validator::validate_access_token($access_token);
+        if (!$token_validation['is_valid']) {
+            $errors['access_token'] = $token_validation['message'];
+        }
+
+        // Validasi Nomor WhatsApp Default
+        $default_recipient = isset($_POST['default_recipient']) ? $_POST['default_recipient'] : '';
+        $recipient_validation = FluentWA_Validator::validate_whatsapp_number($default_recipient);
+        if (!$recipient_validation['is_valid']) {
+            $errors['default_recipient'] = $recipient_validation['message'];
+        }
+
+        // Validasi Template Pesan Default
+        $default_template = isset($_POST['default_template']) ? $_POST['default_template'] : '';
+        $template_validation = FluentWA_Validator::validate_message_template($default_template);
+        if (!$template_validation['is_valid']) {
+            $errors['default_template'] = $template_validation['message'];
+        }
+
+        // Jika ada error, kirim respons error
+        if (!empty($errors)) {
+            wp_send_json_error([
+                'message' => 'Harap perbaiki kesalahan berikut:',
+                'errors' => $errors
+            ]);
+            return;
+        }
+
+        // Gunakan nilai yang sudah diformat
+        $settings = [
+            'api_url' => $api_url_validation['formatted'],
+            'access_token' => $token_validation['formatted'],
+            'default_recipient' => $recipient_validation['formatted'],
+            'default_template' => $template_validation['formatted'],
+            'enable_logging' => isset($_POST['enable_logging']) ? (bool) $_POST['enable_logging'] : false
+        ];
+
+        // Simpan pengaturan
+        update_option(FluentWA_Constants::SETTINGS_OPTION_KEY, $settings);
+
+        // Kirim respons sukses
         wp_send_json_success([
-            'is_complete' => $config_status['is_complete'],
-            'validation_results' => $config_status['validation_results'],
-            'settings_url' => admin_url('admin.php?page=fluent-whatsapp-notifier')
+            'message' => 'Pengaturan berhasil disimpan!'
         ]);
     }
 
@@ -222,7 +277,7 @@ class FluentWA_Admin
      */
     public function check_core_configuration()
     {
-        $settings = get_option('fluentwa_settings', []);
+        $settings = get_option(FluentWA_Constants::SETTINGS_OPTION_KEY, []);
         $validation_results = [];
         $is_complete = true;
 
@@ -241,6 +296,26 @@ class FluentWA_Admin
                     'is_valid' => false,
                     'message' => $api_url_validation['message'],
                     'field_name' => 'URL API Bot WhatsApp'
+                ];
+                $is_complete = false;
+            }
+        }
+
+        // Validasi Token Autentikasi
+        if (empty($settings['access_token'])) {
+            $validation_results['access_token'] = [
+                'is_valid' => false,
+                'message' => 'Token Autentikasi belum dikonfigurasi',
+                'field_name' => 'Token Autentikasi'
+            ];
+            $is_complete = false;
+        } else {
+            $token_validation = FluentWA_Validator::validate_access_token($settings['access_token']);
+            if (!$token_validation['is_valid']) {
+                $validation_results['access_token'] = [
+                    'is_valid' => false,
+                    'message' => $token_validation['message'],
+                    'field_name' => 'Token Autentikasi'
                 ];
                 $is_complete = false;
             }
@@ -328,66 +403,88 @@ class FluentWA_Admin
     }
 
     /**
-     * AJAX handler untuk menyimpan pengaturan umum - DIMODIFIKASI
+     * AJAX handler untuk menguji koneksi WhatsApp
      */
-    public function ajax_save_settings()
+    public function ajax_test_connection()
     {
         // Cek nonce untuk keamanan
         if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'fluentwa_admin_nonce')) {
             wp_send_json_error(['message' => 'Permintaan tidak sah.']);
         }
 
-        $errors = [];
-
-        // Validasi URL API
-        $api_url = isset($_POST['api_url']) ? $_POST['api_url'] : '';
-        $api_url_validation = FluentWA_Validator::validate_api_url($api_url);
-        if (!$api_url_validation['is_valid']) {
-            $errors['api_url'] = $api_url_validation['message'];
-        }
-
-        // Validasi Nomor WhatsApp Default
-        $default_recipient = isset($_POST['default_recipient']) ? $_POST['default_recipient'] : '';
-        $recipient_validation = FluentWA_Validator::validate_whatsapp_number($default_recipient);
-        if (!$recipient_validation['is_valid']) {
-            $errors['default_recipient'] = $recipient_validation['message'];
-        }
-
-        // Validasi Template Pesan Default
-        $default_template = isset($_POST['default_template']) ? $_POST['default_template'] : '';
-        $template_validation = FluentWA_Validator::validate_message_template($default_template);
-        if (!$template_validation['is_valid']) {
-            $errors['default_template'] = $template_validation['message'];
-        }
-
-        // Jika ada error, kirim respons error
-        if (!empty($errors)) {
+        // Cek kelengkapan konfigurasi
+        $config_check = $this->ensure_config_complete('test_connection');
+        if (is_wp_error($config_check)) {
+            $error_data = $config_check->get_error_data();
             wp_send_json_error([
-                'message' => 'Harap perbaiki kesalahan berikut:',
-                'errors' => $errors
+                'message' => $config_check->get_error_message(),
+                'redirect_url' => $error_data['redirect_url'],
+                'incomplete_config' => true
             ]);
             return;
         }
 
-        // Gunakan nilai yang sudah diformat
-        $settings = [
-            'api_url' => $api_url_validation['formatted'],
-            'default_recipient' => $recipient_validation['formatted'],
-            'default_template' => $template_validation['formatted'],
-            'enable_logging' => isset($_POST['enable_logging']) ? (bool) $_POST['enable_logging'] : false
-        ];
+        // Tes koneksi menggunakan API
+        $result = $this->api->test_connection();
 
-        // Simpan pengaturan
-        update_option('fluentwa_settings', $settings);
+        // Kirim respons sesuai hasil
+        if ($result['success']) {
+            wp_send_json_success([
+                'message' => 'Koneksi berhasil! Pesan tes telah dikirim.'
+            ]);
+        } else {
+            wp_send_json_error([
+                'message' => 'Koneksi gagal: ' . $result['message']
+            ]);
+        }
+    }
 
-        // Kirim respons sukses
+    /**
+     * AJAX handler untuk membersihkan log
+     */
+    public function ajax_clear_logs()
+    {
+        // Cek nonce untuk keamanan
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'fluentwa_admin_nonce')) {
+            wp_send_json_error(array('message' => 'Permintaan tidak sah.'));
+        }
+
+        // Bersihkan log
+        $result = $this->logger->clear_logs();
+
+        // Kirim respons
+        if ($result) {
+            wp_send_json_success(array(
+                'message' => 'Log berhasil dibersihkan.'
+            ));
+        } else {
+            wp_send_json_error(array(
+                'message' => 'Gagal membersihkan log.'
+            ));
+        }
+    }
+
+    /**
+     * AJAX handler untuk memeriksa kelengkapan konfigurasi
+     */
+    public function ajax_check_configuration()
+    {
+        // Cek nonce untuk keamanan
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'fluentwa_admin_nonce')) {
+            wp_send_json_error(['message' => 'Permintaan tidak sah.']);
+        }
+
+        $config_status = $this->check_core_configuration();
+
         wp_send_json_success([
-            'message' => 'Pengaturan berhasil disimpan!'
+            'is_complete' => $config_status['is_complete'],
+            'validation_results' => $config_status['validation_results'],
+            'settings_url' => admin_url('admin.php?page=fluent-whatsapp-notifier')
         ]);
     }
 
     /**
-     * AJAX handler untuk menyimpan pengaturan formulir - DIMODIFIKASI
+     * AJAX handler untuk menyimpan pengaturan formulir
      */
     public function ajax_save_form_settings()
     {
@@ -416,7 +513,7 @@ class FluentWA_Admin
         $errors = [];
 
         // Jika mode adalah manual, validasi nomor kustom
-        if ($recipient_mode === self::RECIPIENT_MODE_MANUAL) {
+        if ($recipient_mode === FluentWA_Constants::RECIPIENT_MODE_MANUAL) {
             $recipient = isset($_POST['recipient']) ? $_POST['recipient'] : '';
             $recipient_validation = FluentWA_Validator::validate_whatsapp_number($recipient);
 
@@ -430,11 +527,11 @@ class FluentWA_Admin
         }
 
         // Jika mode adalah dynamic, pastikan ada field telepon tersedia
-        if ($recipient_mode === self::RECIPIENT_MODE_DYNAMIC) {
+        if ($recipient_mode === FluentWA_Constants::RECIPIENT_MODE_DYNAMIC) {
             $phone_fields = $this->get_phone_fields($form_id);
             if (empty($phone_fields)) {
                 // Tidak ada field telepon, paksa gunakan default
-                $recipient_mode = self::RECIPIENT_MODE_DEFAULT;
+                $recipient_mode = FluentWA_Constants::RECIPIENT_MODE_DEFAULT;
             }
 
             // Validasi bahwa field recipient dipilih
@@ -475,7 +572,7 @@ class FluentWA_Admin
         ];
 
         // Simpan pengaturan formulir
-        update_option("fluentwa_form_settings_{$form_id}", $form_settings);
+        update_option(FluentWA_Constants::FORM_SETTINGS_PREFIX . $form_id, $form_settings);
 
         // Kirim respons sukses
         wp_send_json_success([
@@ -483,43 +580,6 @@ class FluentWA_Admin
             'form_id' => $form_id,
             'status' => $enabled
         ]);
-    }
-
-    /**
-     * AJAX handler untuk menguji koneksi WhatsApp - DIMODIFIKASI
-     */
-    public function ajax_test_connection()
-    {
-        // Cek nonce untuk keamanan
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'fluentwa_admin_nonce')) {
-            wp_send_json_error(['message' => 'Permintaan tidak sah.']);
-        }
-
-        // Cek kelengkapan konfigurasi
-        $config_check = $this->ensure_config_complete('test_connection');
-        if (is_wp_error($config_check)) {
-            $error_data = $config_check->get_error_data();
-            wp_send_json_error([
-                'message' => $config_check->get_error_message(),
-                'redirect_url' => $error_data['redirect_url'],
-                'incomplete_config' => true
-            ]);
-            return;
-        }
-
-        // Tes koneksi menggunakan API
-        $result = $this->api->test_connection();
-
-        // Kirim respons sesuai hasil
-        if ($result['success']) {
-            wp_send_json_success([
-                'message' => 'Koneksi berhasil! Pesan tes telah dikirim.'
-            ]);
-        } else {
-            wp_send_json_error([
-                'message' => 'Koneksi gagal: ' . $result['message']
-            ]);
-        }
     }
 
     /**
@@ -543,12 +603,12 @@ class FluentWA_Admin
         $enabled = isset($_POST['enabled']) ? filter_var($_POST['enabled'], FILTER_VALIDATE_BOOLEAN) : false;
 
         // Ambil pengaturan saat ini
-        $form_settings = get_option("fluentwa_form_settings_{$form_id}", array());
+        $form_settings = get_option(FluentWA_Constants::FORM_SETTINGS_PREFIX . $form_id, array());
 
         // Jika pengaturan belum ada, inisialisasi dengan default
         if (empty($form_settings)) {
             $form_settings = array(
-                'recipient_mode' => 'default',
+                'recipient_mode' => FluentWA_Constants::RECIPIENT_MODE_DEFAULT,
                 'recipient' => '',
                 'recipient_field' => '',
                 'message_template' => '',
@@ -560,14 +620,14 @@ class FluentWA_Admin
         $form_settings['enabled'] = $enabled;
 
         // Simpan ke database
-        update_option("fluentwa_form_settings_{$form_id}", $form_settings);
+        update_option(FluentWA_Constants::FORM_SETTINGS_PREFIX . $form_id, $form_settings);
 
         // Kirim respons
         $status_text = $enabled ? 'aktif' : 'tidak aktif';
         wp_send_json_success(array(
             'message' => "Status notifikasi berhasil diubah menjadi {$status_text}.",
-            'status' => $enabled, // Tambahkan status ke respons untuk JavaScript
-            'form_id' => $form_id  // Tambahkan form_id ke respons untuk JavaScript
+            'status' => $enabled,
+            'form_id' => $form_id
         ));
     }
 
@@ -591,7 +651,7 @@ class FluentWA_Admin
         // Kumpulkan status untuk setiap formulir
         $statuses = array();
         foreach ($form_ids as $form_id) {
-            $form_settings = get_option("fluentwa_form_settings_{$form_id}", array());
+            $form_settings = get_option(FluentWA_Constants::FORM_SETTINGS_PREFIX . $form_id, array());
             $statuses[$form_id] = isset($form_settings['enabled']) ? (bool) $form_settings['enabled'] : false;
         }
 
@@ -602,7 +662,7 @@ class FluentWA_Admin
     }
 
     /**
-     * AJAX handler untuk menguji notifikasi formulir - DIMODIFIKASI
+     * AJAX handler untuk menguji notifikasi formulir
      */
     public function ajax_test_form_notification()
     {
@@ -636,21 +696,21 @@ class FluentWA_Admin
         }
 
         // Ambil pengaturan formulir
-        $form_settings = get_option("fluentwa_form_settings_{$form_id}", []);
+        $form_settings = get_option(FluentWA_Constants::FORM_SETTINGS_PREFIX . $form_id, []);
         if (empty($form_settings) || !$form_settings['enabled']) {
             wp_send_json_error(['message' => 'Notifikasi tidak diaktifkan untuk formulir ini.']);
         }
 
-        // PERBAIKAN: Gunakan mode penerima yang dikirim dari client
+        // Gunakan mode penerima yang dikirim dari client
         $recipient_mode = isset($_POST['recipient_mode']) ?
-            sanitize_text_field($_POST['recipient_mode']) : ($form_settings['recipient_mode'] ?? self::RECIPIENT_MODE_DEFAULT);
+            sanitize_text_field($_POST['recipient_mode']) : ($form_settings['recipient_mode'] ?? FluentWA_Constants::RECIPIENT_MODE_DEFAULT);
 
         // Tentukan penerima berdasarkan mode yang dipilih
         $recipient = '';
         $mode_label = '';
 
         switch ($recipient_mode) {
-            case self::RECIPIENT_MODE_MANUAL:
+            case FluentWA_Constants::RECIPIENT_MODE_MANUAL:
                 // Mode Kustom: Gunakan nomor kustom dari pengaturan
                 $recipient = !empty($form_settings['recipient']) ? $form_settings['recipient'] : '';
                 $mode_label = 'Nomor Kustom';
@@ -666,19 +726,19 @@ class FluentWA_Admin
                 }
                 break;
 
-            case self::RECIPIENT_MODE_DYNAMIC:
+            case FluentWA_Constants::RECIPIENT_MODE_DYNAMIC:
                 // Mode Dinamis: Untuk tes, gunakan nomor default karena tidak ada data form
-                $recipient = get_option('fluentwa_settings')['default_recipient'] ?? '';
+                $recipient = get_option(FluentWA_Constants::SETTINGS_OPTION_KEY)['default_recipient'] ?? '';
                 $mode_label = 'Default (untuk pengujian)';
 
                 // Tambahkan catatan bahwa kita menggunakan nomor default untuk pengujian
                 $test_note = "Menggunakan nomor default untuk pengujian karena mode 'Ambil dari Field Form' membutuhkan data formulir yang tidak tersedia saat tes.";
                 break;
 
-            case self::RECIPIENT_MODE_DEFAULT:
+            case FluentWA_Constants::RECIPIENT_MODE_DEFAULT:
             default:
                 // Mode Default: Gunakan nomor default
-                $recipient = get_option('fluentwa_settings')['default_recipient'] ?? '';
+                $recipient = get_option(FluentWA_Constants::SETTINGS_OPTION_KEY)['default_recipient'] ?? '';
                 $mode_label = 'Default';
                 break;
         }
@@ -718,28 +778,65 @@ class FluentWA_Admin
     }
 
     /**
-     * AJAX handler untuk membersihkan log
+     * AJAX handler untuk menyimpan pengaturan formulir yang otomatis disesuaikan
      */
-    public function ajax_clear_logs()
+    public function ajax_auto_adjust_form_settings()
     {
         // Cek nonce untuk keamanan
         if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'fluentwa_admin_nonce')) {
             wp_send_json_error(array('message' => 'Permintaan tidak sah.'));
         }
 
-        // Bersihkan log
-        $result = $this->logger->clear_logs();
+        // Validasi form ID
+        $form_id = isset($_POST['form_id']) ? intval($_POST['form_id']) : 0;
 
-        // Kirim respons
-        if ($result) {
-            wp_send_json_success(array(
-                'message' => 'Log berhasil dibersihkan.'
-            ));
-        } else {
-            wp_send_json_error(array(
-                'message' => 'Gagal membersihkan log.'
-            ));
+        if ($form_id <= 0) {
+            wp_send_json_error(array('message' => 'ID formulir tidak valid.'));
         }
+
+        // Paksa recipient_mode ke default
+        $recipient_mode = FluentWA_Constants::RECIPIENT_MODE_DEFAULT;
+
+        // Tangani nilai enabled dengan cara yang sangat eksplisit
+        $enabled = false; // Default ke false
+        if (isset($_POST['enabled'])) {
+            $enabled_value = $_POST['enabled'];
+            if ($enabled_value === '1' || $enabled_value === 'true' || $enabled_value === true || $enabled_value === 1) {
+                $enabled = true;
+            }
+        }
+
+        // Ambil pengaturan yang ada dan pertahankan nilai lain yang tidak berubah
+        $current_settings = get_option(FluentWA_Constants::FORM_SETTINGS_PREFIX . $form_id, array());
+
+        // Siapkan data pengaturan formulir dengan fokus pada perubahan recipient_mode
+        $form_settings = array(
+            'enabled' => $enabled,
+            'recipient_mode' => $recipient_mode,
+            'recipient' => sanitize_text_field($_POST['recipient']),
+            'recipient_field' => sanitize_text_field($_POST['recipient_field']),
+            'message_template' => wp_kses_post($_POST['message_template']),
+            'included_fields' => isset($_POST['included_fields']) ? (array) $_POST['included_fields'] : array('*')
+        );
+
+        // Log perubahan otomatis
+        if (
+            isset($this->logger) && $this->logger &&
+            isset($current_settings['recipient_mode']) &&
+            $current_settings['recipient_mode'] === FluentWA_Constants::RECIPIENT_MODE_DYNAMIC
+        ) {
+            $this->logger->log_info("Form {$form_id}: Auto-adjusted recipient mode from 'dynamic' to 'default' because phone fields are no longer available");
+        }
+
+        // Simpan pengaturan formulir
+        update_option(FluentWA_Constants::FORM_SETTINGS_PREFIX . $form_id, $form_settings);
+
+        // Kirim respons sukses
+        wp_send_json_success(array(
+            'message' => 'Pengaturan formulir otomatis disesuaikan!',
+            'form_id' => $form_id,
+            'status' => $enabled
+        ));
     }
 
     /**
@@ -760,7 +857,7 @@ class FluentWA_Admin
             }
 
             $form_title = $form->title;
-            $form_settings = get_option("fluentwa_form_settings_{$form_id}", array(
+            $form_settings = get_option(FluentWA_Constants::FORM_SETTINGS_PREFIX . $form_id, array(
                 'enabled' => false,
                 'recipient' => '',
                 'recipient_field' => '',
@@ -775,7 +872,7 @@ class FluentWA_Admin
             $phone_fields = $this->get_phone_fields($form_id);
 
             // Ambil pengaturan umum
-            $settings = get_option('fluentwa_settings', array());
+            $settings = get_option(FluentWA_Constants::SETTINGS_OPTION_KEY, array());
 
             // Tampilkan template pengaturan formulir
             include FLUENTWA_PLUGIN_DIR . 'templates/form-settings.php';
@@ -844,6 +941,7 @@ class FluentWA_Admin
                 <ol>
                     <li><?php _e('Menyiapkan Bot WhatsApp menggunakan whatsapp-web.js', 'fluent-whatsapp-notifier'); ?></li>
                     <li><?php _e('Mengonfigurasi URL API bot di halaman pengaturan umum', 'fluent-whatsapp-notifier'); ?></li>
+                    <li><?php _e('Menambahkan token autentikasi yang sama dengan yang digunakan di server bot', 'fluent-whatsapp-notifier'); ?></li>
                     <li><?php _e('Mengaktifkan notifikasi untuk formulir yang diinginkan', 'fluent-whatsapp-notifier'); ?></li>
                 </ol>
             </div>
@@ -897,7 +995,7 @@ class FluentWA_Admin
         $form_fields = array();
         $form_structure = json_decode($form->form_fields, true);
 
-        // TAMBAHKAN INI: Pengecekan error JSON
+        // Pengecekan error JSON
         if (json_last_error() !== JSON_ERROR_NONE) {
             if (isset($this->logger) && $this->logger) {
                 $this->logger->log_error("Error parsing form fields JSON for form ID {$form_id}: " . json_last_error_msg());
@@ -993,66 +1091,5 @@ class FluentWA_Admin
             }
         }
     }
-
-    /**
-     * AJAX handler untuk menyimpan pengaturan formulir yang otomatis disesuaikan
-     */
-    public function ajax_auto_adjust_form_settings()
-    {
-        // Cek nonce untuk keamanan
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'fluentwa_admin_nonce')) {
-            wp_send_json_error(array('message' => 'Permintaan tidak sah.'));
-        }
-
-        // Validasi form ID
-        $form_id = isset($_POST['form_id']) ? intval($_POST['form_id']) : 0;
-
-        if ($form_id <= 0) {
-            wp_send_json_error(array('message' => 'ID formulir tidak valid.'));
-        }
-
-        // Paksa recipient_mode ke default
-        $recipient_mode = self::RECIPIENT_MODE_DEFAULT;
-
-        // Tangani nilai enabled dengan cara yang sangat eksplisit
-        $enabled = false; // Default ke false
-        if (isset($_POST['enabled'])) {
-            $enabled_value = $_POST['enabled'];
-            if ($enabled_value === '1' || $enabled_value === 'true' || $enabled_value === true || $enabled_value === 1) {
-                $enabled = true;
-            }
-        }
-
-        // Ambil pengaturan yang ada dan pertahankan nilai lain yang tidak berubah
-        $current_settings = get_option("fluentwa_form_settings_{$form_id}", array());
-
-        // Siapkan data pengaturan formulir dengan fokus pada perubahan recipient_mode
-        $form_settings = array(
-            'enabled' => $enabled,
-            'recipient_mode' => $recipient_mode,
-            'recipient' => sanitize_text_field($_POST['recipient']),
-            'recipient_field' => sanitize_text_field($_POST['recipient_field']),
-            'message_template' => wp_kses_post($_POST['message_template']),
-            'included_fields' => isset($_POST['included_fields']) ? (array) $_POST['included_fields'] : array('*')
-        );
-
-        // Log perubahan otomatis
-        if (
-            isset($this->logger) && $this->logger &&
-            isset($current_settings['recipient_mode']) &&
-            $current_settings['recipient_mode'] === 'dynamic'
-        ) {
-            $this->logger->log_info("Form {$form_id}: Auto-adjusted recipient mode from 'dynamic' to 'default' because phone fields are no longer available");
-        }
-
-        // Simpan pengaturan formulir
-        update_option("fluentwa_form_settings_{$form_id}", $form_settings);
-
-        // Kirim respons sukses
-        wp_send_json_success(array(
-            'message' => 'Pengaturan formulir otomatis disesuaikan!',
-            'form_id' => $form_id,
-            'status' => $enabled
-        ));
-    }
 }
+?>

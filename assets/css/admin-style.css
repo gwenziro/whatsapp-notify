@@ -1,43 +1,43 @@
 /**
- * Fluent WhatsApp Notifier - Admin Styles
+ * WhatsApp Notify - Admin Styles
  * Tampilan modern untuk halaman admin
  */
 
 /* Variables */
 :root {
-    --fluentwa-primary: #25D366; /* WhatsApp green color */
-    --fluentwa-primary-dark: #128C7E;
-    --fluentwa-secondary: #34B7F1;
-    --fluentwa-text: #333333;
-    --fluentwa-light-bg: #F8F9FA;
-    --fluentwa-border: #E1E1E1;
-    --fluentwa-success: #4CAF50;
-    --fluentwa-error: #F44336;
-    --fluentwa-warning: #FF9800;
-    --fluentwa-radius: 8px;
-    --fluentwa-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    --wanotify-primary: #25D366; /* WhatsApp green color */
+    --wanotify-primary-dark: #128C7E;
+    --wanotify-secondary: #34B7F1;
+    --wanotify-text: #333333;
+    --wanotify-light-bg: #F8F9FA;
+    --wanotify-border: #E1E1E1;
+    --wanotify-success: #4CAF50;
+    --wanotify-error: #F44336;
+    --wanotify-warning: #FF9800;
+    --wanotify-radius: 8px;
+    --wanotify-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 
 /* Main container */
-.fluentwa-admin {
+.wanotify-admin {
     margin: 0;
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-    color: var(--fluentwa-text);
+    color: var(--wanotify-text);
 }
 
 /* Header */
-.fluentwa-header {
+.wanotify-header {
     background: #fff;
     padding: 20px 20px 0 20px;
     margin: 0 -20px 0;
-    border-bottom: 1px solid var(--fluentwa-border);
+    border-bottom: 1px solid var(--wanotify-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.fluentwa-header h1 {
+.wanotify-header h1 {
     display: flex;
     align-items: center;
     font-size: 24px;
@@ -46,16 +46,16 @@
     padding: 0;
 }
 
-.fluentwa-header h1 .dashicons {
+.wanotify-header h1 .dashicons {
     font-size: 28px;
     width: 28px;
     height: 28px;
     margin-right: 10px;
-    color: var(--fluentwa-primary);
+    color: var(--wanotify-primary);
 }
 
-.fluentwa-version {
-    background: var(--fluentwa-secondary);
+.wanotify-version {
+    background: var(--wanotify-secondary);
     color: white;
     padding: 3px 8px;
     border-radius: 15px;
@@ -64,55 +64,55 @@
 }
 
 /* Dirty state indicator */
-.fluentwa-dirty-state {
+.wanotify-dirty-state {
     display: inline-block;
     padding: 3px 8px;
     border-radius: 15px;
     font-size: 12px;
     font-weight: 600;
-    color: var(--fluentwa-warning);
+    color: var(--wanotify-warning);
     background: rgba(255, 152, 0, 0.1);
     margin-left: 10px;
     display: none; /* Sembunyikan secara default */
 }
 
-.fluentwa-dirty-state.active {
+.wanotify-dirty-state.active {
     display: inline-block; /* Tampilkan saat aktif */
 }
 
 /* Notification area */
-.fluentwa-notifications {
+.wanotify-notifications {
     padding: 15px 0;
 }
 
-.fluentwa-notification {
+.wanotify-notification {
     margin: 10px 0;
     padding: 15px;
-    border-radius: var(--fluentwa-radius);
+    border-radius: var(--wanotify-radius);
     display: flex;
     align-items: center;
     animation: fadeIn 0.3s ease-in-out;
 }
 
-.fluentwa-notification.fluentwa-success {
+.wanotify-notification.wanotify-success {
     background-color: rgba(76, 175, 80, 0.1);
-    border-left: 4px solid var(--fluentwa-success);
+    border-left: 4px solid var(--wanotify-success);
 }
 
-.fluentwa-notification.fluentwa-error {
+.wanotify-notification.wanotify-error {
     background-color: rgba(244, 67, 54, 0.1);
-    border-left: 4px solid var(--fluentwa-error);
+    border-left: 4px solid var(--wanotify-error);
 }
 
-.fluentwa-notification-icon {
+.wanotify-notification-icon {
     margin-right: 10px;
 }
 
-.fluentwa-notification-message {
+.wanotify-notification-message {
     flex-grow: 1;
 }
 
-.fluentwa-notification-close {
+.wanotify-notification-close {
     cursor: pointer;
     opacity: 0.6;
     transition: opacity 0.2s ease;
@@ -124,21 +124,21 @@
 }
 
 /* Container */
-.fluentwa-container {
+.wanotify-container {
     background: #fff;
-    border-radius: var(--fluentwa-radius);
-    box-shadow: var(--fluentwa-shadow);
+    border-radius: var(--wanotify-radius);
+    box-shadow: var(--wanotify-shadow);
     margin: 20px 0;
 }
 
 /* Tabs */
-.fluentwa-tabs .nav-tab-wrapper {
-    border-bottom: 1px solid var(--fluentwa-border);
+.wanotify-tabs .nav-tab-wrapper {
+    border-bottom: 1px solid var(--wanotify-border);
     margin: 0;
     padding-left: 20px;
 }
 
-.fluentwa-tabs .nav-tab {
+.wanotify-tabs .nav-tab {
     margin-left: 0;
     margin-right: 5px;
     padding: 12px 20px;
@@ -149,31 +149,31 @@
     background: transparent;
 }
 
-.fluentwa-tabs .nav-tab-active, 
-.fluentwa-tabs .nav-tab:hover {
-    border-bottom: 3px solid var(--fluentwa-primary);
+.wanotify-tabs .nav-tab-active, 
+.wanotify-tabs .nav-tab:hover {
+    border-bottom: 3px solid var(--wanotify-primary);
     background: transparent;
-    color: var(--fluentwa-primary);
+    color: var(--wanotify-primary);
 }
 
 /* Content area */
-.fluentwa-content {
+.wanotify-content {
     padding: 30px;
 }
 
 /* Section styling */
-.fluentwa-settings-section {
+.wanotify-settings-section {
     margin-bottom: 30px;
 }
 
-.fluentwa-section-header {
+.wanotify-section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.fluentwa-section-header h2 {
+.wanotify-section-header h2 {
     margin: 0;
     padding: 0;
     font-size: 18px;
@@ -181,68 +181,68 @@
 }
 
 /* Form styling */
-.fluentwa-form {
+.wanotify-form {
     max-width: 800px;
 }
 
-.fluentwa-form-row {
+.wanotify-form-row {
     margin-bottom: 25px;
     display: flex;
     flex-wrap: wrap;
 }
 
-.fluentwa-form-row > label {
+.wanotify-form-row > label {
     flex: 0 0 200px;
     font-weight: 600;
     padding-top: 8px;
 }
 
-.fluentwa-form-input {
+.wanotify-form-input {
     flex: 1;
     min-width: 300px;
 }
 
-.fluentwa-help-text {
+.wanotify-help-text {
     font-size: 13px;
     color: #666;
     margin: 5px 0 0;
 }
 
 /* Inputs */
-.fluentwa-input,
-.fluentwa-select,
-.fluentwa-textarea {
+.wanotify-input,
+.wanotify-select,
+.wanotify-textarea {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid var(--fluentwa-border);
+    border: 1px solid var(--wanotify-border);
     border-radius: 4px;
     background: #fff;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.fluentwa-input:focus,
-.fluentwa-select:focus,
-.fluentwa-textarea:focus {
-    border-color: var(--fluentwa-primary);
-    box-shadow: 0 0 0 1px var(--fluentwa-primary);
+.wanotify-input:focus,
+.wanotify-select:focus,
+.wanotify-textarea:focus {
+    border-color: var(--wanotify-primary);
+    box-shadow: 0 0 0 1px var(--wanotify-primary);
     outline: none;
 }
 
 /* Toggle switch */
-.fluentwa-switch {
+.wanotify-switch {
     position: relative;
     display: inline-block;
     width: 50px;
     height: 26px;
 }
 
-.fluentwa-switch input { 
+.wanotify-switch input { 
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.fluentwa-slider {
+.wanotify-slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -254,7 +254,7 @@
     border-radius: 34px;
 }
 
-.fluentwa-slider:before {
+.wanotify-slider:before {
     position: absolute;
     content: "";
     height: 18px;
@@ -266,28 +266,28 @@
     border-radius: 50%;
 }
 
-input:checked + .fluentwa-slider {
-    background-color: var(--fluentwa-primary);
+input:checked + .wanotify-slider {
+    background-color: var(--wanotify-primary);
 }
 
-input:focus + .fluentwa-slider {
-    box-shadow: 0 0 1px var(--fluentwa-primary);
+input:focus + .wanotify-slider {
+    box-shadow: 0 0 1px var(--wanotify-primary);
 }
 
-input:checked + .fluentwa-slider:before {
+input:checked + .wanotify-slider:before {
     transform: translateX(24px);
 }
 
 /* Form action buttons */
-.fluentwa-form-actions {
+.wanotify-form-actions {
     padding-top: 20px;
     margin-top: 20px;
-    border-top: 1px solid var(--fluentwa-border);
+    border-top: 1px solid var(--wanotify-border);
 }
 
-.fluentwa-submit-btn {
-    background-color: var(--fluentwa-primary) !important;
-    border-color: var(--fluentwa-primary-dark) !important;
+.wanotify-submit-btn {
+    background-color: var(--wanotify-primary) !important;
+    border-color: var(--wanotify-primary-dark) !important;
     color: white !important;
     padding: 8px 20px !important;
     height: auto !important;
@@ -296,18 +296,18 @@ input:checked + .fluentwa-slider:before {
     transition: all 0.2s ease !important;
 }
 
-.fluentwa-submit-btn:hover {
-    background-color: var(--fluentwa-primary-dark) !important;
+.wanotify-submit-btn:hover {
+    background-color: var(--wanotify-primary-dark) !important;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Table list styling */
-.fluentwa-form-list-table {
+.wanotify-form-list-table {
     margin-top: 20px;
 }
 
-.fluentwa-status {
+.wanotify-status {
     display: inline-block;
     padding: 4px 10px;
     border-radius: 20px;
@@ -315,51 +315,53 @@ input:checked + .fluentwa-slider:before {
     font-weight: 600;
 }
 
-.fluentwa-status-active {
+.wanotify-status-active {
     background-color: rgba(76, 175, 80, 0.1);
-    color: var(--fluentwa-success);
+    color: var(--wanotify-success);
 }
 
-.fluentwa-status-inactive {
+.wanotify-status-inactive {
     background-color: rgba(158, 158, 158, 0.1);
     color: #757575;
 }
 
 /* Checkbox styling */
-.fluentwa-checkbox {
+.wanotify-checkbox {
     display: flex;
     align-items: center;
     margin-bottom: 8px;
     cursor: pointer;
 }
 
-.fluentwa-checkbox input[type="checkbox"] {
+.wanotify-checkbox input[type="checkbox"] {
     margin-right: 8px;
 }
 
-.fluentwa-checkbox-group {
+.wanotify-checkbox-group {
     margin-bottom: 15px;
 }
 
-.fluentwa-field-list {
+.wanotify-field-list {
     max-height: 200px;
     overflow-y: auto;
-    border: 1px solid var(--fluentwa-border);
-    border-radius: var(--fluentwa-radius);
+    border: 1px solid var(--wanotify-border);
+    border-radius: var(--wanotify-radius);
     padding: 10px;
-    background: var(--fluentwa-light-bg);
+    background: var(--wanotify-light-bg);
 }
 
 /* Logs */
-.fluentwa-logs-container {
-    background: var(--fluentwa-light-bg);
-    border: 1px solid var(--fluentwa-border);
-    border-radius: var(--fluentwa-radius);
+.wanotify-logs-container {
+    background: var(--wanotify-light-bg);
+    border: 1px solid var(--wanotify-border);
+    border-radius: var(--wanotify-radius);
     padding: 15px;
     margin-top: 20px;
+    max-height: 500px;
+    overflow-y: auto;
 }
 
-.fluentwa-log-entry {
+.wanotify-log-entry {
     padding: 8px 12px;
     margin-bottom: 10px;
     background: #fff;
@@ -369,23 +371,97 @@ input:checked + .fluentwa-slider:before {
     font-size: 12px;
     white-space: pre-wrap;
     word-wrap: break-word;
+    line-height: 1.5;
+    text-align: left;
+    text-indent: 0;
+    display: block;
 }
 
-.fluentwa-log-entry.log-type-info {
-    border-left-color: var(--fluentwa-secondary);
+/* Pastikan semua konten log rata kiri */
+.wanotify-log-entry * {
+    text-align: left !important;
+    text-indent: 0 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
 }
 
-.fluentwa-log-entry.log-type-error {
-    border-left-color: var(--fluentwa-error);
+/* Log level styling - without changing content */
+.wanotify-log-entry.log-info {
+    border-left-color: var(--wanotify-secondary);
 }
 
-.fluentwa-logs-actions {
+.wanotify-log-entry.log-error {
+    border-left-color: var(--wanotify-error);
+}
+
+.wanotify-log-entry.log-warning {
+    border-left-color: var(--wanotify-warning);
+}
+
+.wanotify-log-entry.log-debug {
+    border-left-color: #666;
+}
+
+.wanotify-logs-actions {
     margin-bottom: 15px;
     text-align: right;
 }
 
+/* Button disabled state */
+.button-disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+/* Tooltip container untuk tombol disabled */
+.wanotify-tooltip-container {
+    display: inline-block;
+    margin-left: 8px;
+    position: relative;
+    top: 3px;
+    cursor: help;
+}
+
+.wanotify-tooltip-container .dashicons {
+    color: #777;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Tooltip hover style */
+.wanotify-tooltip-container:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 12px;
+    background: #333;
+    color: white;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 12px;
+    z-index: 1000;
+    min-width: 200px;
+    text-align: center;
+}
+
+.wanotify-tooltip-container:hover::before {
+    content: "";
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+    z-index: 1000;
+}
+
 /* Footer */
-.fluentwa-footer {
+.wanotify-footer {
     padding: 15px 0;
     text-align: center;
     font-size: 13px;
@@ -393,13 +469,13 @@ input:checked + .fluentwa-slider:before {
 }
 
 /* Radio Group Styles */
-.fluentwa-radio-group {
+.wanotify-radio-group {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.fluentwa-radio {
+.wanotify-radio {
     display: flex;
     flex-direction: column;
     padding: 12px;
@@ -408,30 +484,30 @@ input:checked + .fluentwa-slider:before {
     background: #f9f9f9;
 }
 
-.fluentwa-radio:has(input:checked) {
+.wanotify-radio:has(input:checked) {
     border-color: #2271b1;
     background: #f0f6fc;
     box-shadow: 0 0 0 1px #2271b1;
 }
 
-.fluentwa-radio > input[type="radio"] {
+.wanotify-radio > input[type="radio"] {
     margin-right: 8px;
 }
 
 /* Style untuk opsi radio yang dinonaktifkan */
-.fluentwa-radio-disabled {
+.wanotify-radio-disabled {
     opacity: 0.6;
     cursor: not-allowed;
     position: relative;
 }
 
-.fluentwa-radio-disabled input[type="radio"] {
+.wanotify-radio-disabled input[type="radio"] {
     cursor: not-allowed;
     pointer-events: none;
 }
 
 /* Style untuk icon tooltip */
-.fluentwa-option-tooltip {
+.wanotify-option-tooltip {
     display: inline-block;
     margin-left: 5px;
     vertical-align: middle;
@@ -439,7 +515,7 @@ input:checked + .fluentwa-slider:before {
     cursor: help;
 }
 
-.fluentwa-option-tooltip .dashicons {
+.wanotify-option-tooltip .dashicons {
     color: #777;
     font-size: 16px;
     width: 16px;
@@ -447,7 +523,7 @@ input:checked + .fluentwa-slider:before {
 }
 
 /* Tooltip hover style - menggunakan CSS native tooltips */
-.fluentwa-option-tooltip:hover::after {
+.wanotify-option-tooltip:hover::after {
     content: attr(title);
     position: absolute;
     bottom: 125%;
@@ -462,7 +538,7 @@ input:checked + .fluentwa-slider:before {
     z-index: 1000;
 }
 
-.fluentwa-option-tooltip:hover::before {
+.wanotify-option-tooltip:hover::before {
     content: "";
     position: absolute;
     bottom: 120%;
@@ -473,7 +549,7 @@ input:checked + .fluentwa-slider:before {
     border-color: #333 transparent transparent transparent;
 }
 
-.fluentwa-radio > span {
+.wanotify-radio > span {
     font-weight: 500;
     margin-bottom: 5px;
 }
@@ -486,21 +562,21 @@ input:checked + .fluentwa-slider:before {
 }
 
 /* Toggle switch dalam tabel formulir */
-.fluentwa-toggle {
+.wanotify-toggle {
     position: relative;
     display: inline-flex;
     align-items: center;
     cursor: pointer;
 }
 
-.fluentwa-toggle input {
+.wanotify-toggle input {
     opacity: 0;
     width: 0;
     height: 0;
     position: absolute;
 }
 
-.fluentwa-toggle-slider {
+.wanotify-toggle-slider {
     position: relative;
     display: inline-block;
     width: 36px;
@@ -511,7 +587,7 @@ input:checked + .fluentwa-slider:before {
     transition: .3s;
 }
 
-.fluentwa-toggle-slider:before {
+.wanotify-toggle-slider:before {
     position: absolute;
     content: "";
     height: 16px;
@@ -523,40 +599,40 @@ input:checked + .fluentwa-slider:before {
     transition: .3s;
 }
 
-input:checked + .fluentwa-toggle-slider {
-    background-color: var(--fluentwa-primary);
+input:checked + .wanotify-toggle-slider {
+    background-color: var(--wanotify-primary);
 }
 
-input:focus + .fluentwa-toggle-slider {
-    box-shadow: 0 0 1px var(--fluentwa-primary);
+input:focus + .wanotify-toggle-slider {
+    box-shadow: 0 0 1px var(--wanotify-primary);
 }
 
-input:checked + .fluentwa-toggle-slider:before {
+input:checked + .wanotify-toggle-slider:before {
     transform: translateX(16px);
 }
 
-.fluentwa-toggle-status {
+.wanotify-toggle-status {
     font-size: 12px;
     font-weight: 500;
 }
 
 /* Efek loading saat toggle sedang di proses */
-.fluentwa-toggle.fluentwa-loading {
+.wanotify-toggle.wanotify-loading {
     opacity: 0.7;
     pointer-events: none;
 }
 
-.fluentwa-toggle.fluentwa-loading .fluentwa-toggle-slider:before {
-    animation: fluentwa-toggle-pulse 1s infinite;
+.wanotify-toggle.wanotify-loading .wanotify-toggle-slider:before {
+    animation: wanotify-toggle-pulse 1s infinite;
 }
 
-@keyframes fluentwa-toggle-pulse {
+@keyframes wanotify-toggle-pulse {
     0% { opacity: 1; }
     50% { opacity: 0.5; }
     100% { opacity: 1; }
 }
 
-.fluentwa-field-error {
+.wanotify-field-error {
     color: #dc3232;
     font-size: 12px;
     margin-top: 5px;
@@ -580,27 +656,27 @@ input:checked + .fluentwa-toggle-slider:before {
 }
 
 /* Hindari mewarnai radio button saat error */
-.fluentwa-radio input[type="radio"] {
+.wanotify-radio input[type="radio"] {
     border-color: #7e8993 !important; /* Warna default */
 }
 
 /* Field error */
-.fluentwa-form-input.has-error input,
-.fluentwa-form-input.has-error textarea,
-.fluentwa-form-input.has-error select {
+.wanotify-form-input.has-error input,
+.wanotify-form-input.has-error textarea,
+.wanotify-form-input.has-error select {
     border-color: #dc3232 !important;
     box-shadow: 0 0 2px rgba(220, 50, 50, 0.8);
 }
 
 /* Field warning */
-.fluentwa-form-input.has-warning input,
-.fluentwa-form-input.has-warning textarea,
-.fluentwa-form-input.has-warning select {
+.wanotify-form-input.has-warning input,
+.wanotify-form-input.has-warning textarea,
+.wanotify-form-input.has-warning select {
     border-color: #ffba00 !important;
     box-shadow: 0 0 2px rgba(255, 186, 0, 0.8);
 }
 
-.fluentwa-field-warning {
+.wanotify-field-warning {
     color: #eb8b00;
     font-size: 12px;
     margin-top: 5px;
@@ -609,7 +685,7 @@ input:checked + .fluentwa-toggle-slider:before {
 }
 
 /* Banner untuk konfigurasi tidak lengkap */
-.fluentwa-config-notice {
+.wanotify-config-notice {
     background-color: #fff8e5;
     border-left: 4px solid #ffba00;
     padding: 12px 15px;
@@ -617,13 +693,13 @@ input:checked + .fluentwa-toggle-slider:before {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
-.fluentwa-config-notice a.button {
+.wanotify-config-notice a.button {
     margin-left: 10px;
     vertical-align: middle;
 }
 
 /* Status indikator untuk fitur yang dinonaktifkan */
-.fluentwa-feature-blocked-info {
+.wanotify-feature-blocked-info {
     color: #dc3232;
     font-size: 12px;
     margin-top: 5px;

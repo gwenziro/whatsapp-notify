@@ -1,5 +1,5 @@
 /**
- * Fluent WhatsApp Notifier - Admin JavaScript
+ * WhatsApp Notify - Admin JavaScript
  */
 (function ($) {
   "use strict";
@@ -9,9 +9,9 @@
   let currentForm = null; // Form saat ini yang sedang diubah
 
   /**
-   * FluentWAValidator - Objek untuk validasi input
+   * WANotifyValidator - Objek untuk validasi input
    */
-  const FluentWAValidator = {
+  const WANotifyValidator = {
     /**
      * Validasi nomor WhatsApp
      * @param {string} number Nomor yang akan divalidasi
@@ -220,16 +220,16 @@
    */
   function saveInitialFormData() {
     // Simpan data form pengaturan umum
-    if ($("#fluentwa-general-settings").length) {
-      initialFormData["fluentwa-general-settings"] = getFormState(
-        "#fluentwa-general-settings"
+    if ($("#wanotify-general-settings").length) {
+      initialFormData["wanotify-general-settings"] = getFormState(
+        "#wanotify-general-settings"
       );
     }
 
     // Simpan data form pengaturan formulir
-    if ($("#fluentwa-form-settings").length) {
-      initialFormData["fluentwa-form-settings"] = getFormState(
-        "#fluentwa-form-settings"
+    if ($("#wanotify-form-settings").length) {
+      initialFormData["wanotify-form-settings"] = getFormState(
+        "#wanotify-form-settings"
       );
     }
   }
@@ -271,20 +271,20 @@
     let isDirty = false;
 
     // Cek form pengaturan umum
-    if ($("#fluentwa-general-settings").length) {
-      const currentState = getFormState("#fluentwa-general-settings");
-      if (initialFormData["fluentwa-general-settings"] !== currentState) {
+    if ($("#wanotify-general-settings").length) {
+      const currentState = getFormState("#wanotify-general-settings");
+      if (initialFormData["wanotify-general-settings"] !== currentState) {
         isDirty = true;
-        currentForm = document.getElementById("fluentwa-general-settings");
+        currentForm = document.getElementById("wanotify-general-settings");
       }
     }
 
     // Cek form pengaturan formulir
-    if (!isDirty && $("#fluentwa-form-settings").length) {
-      const currentState = getFormState("#fluentwa-form-settings");
-      if (initialFormData["fluentwa-form-settings"] !== currentState) {
+    if (!isDirty && $("#wanotify-form-settings").length) {
+      const currentState = getFormState("#wanotify-form-settings");
+      if (initialFormData["wanotify-form-settings"] !== currentState) {
         isDirty = true;
-        currentForm = document.getElementById("fluentwa-form-settings");
+        currentForm = document.getElementById("wanotify-form-settings");
       }
     }
 
@@ -323,37 +323,37 @@
     });
 
     // Test connection button
-    $("#fluentwa-test-connection").on("click", testConnection);
+    $("#wanotify-test-connection").on("click", testConnection);
 
     // Test form notification button
-    $("#fluentwa-test-form-notification").on("click", testFormNotification);
+    $("#wanotify-test-form-notification").on("click", testFormNotification);
 
     // Clear logs button
-    $("#fluentwa-clear-logs").on("click", clearLogs);
+    $("#wanotify-clear-logs").on("click", clearLogs);
 
     // Close notification
-    $(document).on("click", ".fluentwa-notification-close", function () {
+    $(document).on("click", ".wanotify-notification-close", function () {
       $(this)
-        .closest(".fluentwa-notification")
+        .closest(".wanotify-notification")
         .fadeOut(300, function () {
           $(this).remove();
         });
     });
 
     // Deteksi perubahan pada form - PERBAIKAN
-    $("#fluentwa-general-settings, #fluentwa-form-settings").on(
+    $("#wanotify-general-settings, #wanotify-form-settings").on(
       "change input keyup paste",
       function () {
         // Gunakan timeout untuk menghindari terlalu banyak pemeriksaan
-        clearTimeout(window.fluentwaFormCheckTimer);
-        window.fluentwaFormCheckTimer = setTimeout(function () {
+        clearTimeout(window.wanotifyFormCheckTimer);
+        window.wanotifyFormCheckTimer = setTimeout(function () {
           checkFormDirty();
         }, 100);
       }
     );
 
     // Tambahkan event khusus untuk tombol kembali ke daftar formulir
-    $(".fluentwa-back-btn").on("click", function (e) {
+    $(".wanotify-back-btn").on("click", function (e) {
       // Periksa apakah ada perubahan yang belum disimpan
       if (formIsDirty) {
         if (
@@ -369,6 +369,45 @@
       // Reset form dirty state sebelum navigasi
       formIsDirty = false;
     });
+
+    // PERBAIKAN: Update status tombol test sesuai status form
+    $("#enabled").on("change", function() {
+      updateTestButtonState($(this).is(":checked"));
+    });
+    
+    // Panggil saat halaman dimuat
+    setTimeout(function() {
+      if ($("#enabled").length) {
+        updateTestButtonState($("#enabled").is(":checked"));
+      }
+    }, 100);
+  }
+
+  /**
+   * Update status tombol test berdasarkan status form
+   * @param {boolean} isEnabled Status aktif form
+   */
+  function updateTestButtonState(isEnabled) {
+    const $btn = $("#wanotify-test-form-notification");
+    
+    // Hapus tooltip container yang sudah ada (jika ada)
+    $("#wanotify-test-tooltip").remove();
+    
+    if (!isEnabled) {
+      $btn.addClass("button-disabled");
+      
+      // Buat tooltip yang lebih informatif dengan container khusus
+      const $tooltipContainer = $('<span id="wanotify-test-tooltip" class="wanotify-tooltip-container"></span>');
+      const $tooltipIcon = $('<span class="dashicons dashicons-info-outline"></span>');
+      
+      $tooltipContainer.attr('title', "Notifikasi harus diaktifkan untuk melakukan pengujian");
+      $tooltipContainer.append($tooltipIcon);
+      
+      // Tambahkan tooltip setelah tombol
+      $btn.after($tooltipContainer);
+    } else {
+      $btn.removeClass("button-disabled");
+    }
   }
 
   /**
@@ -376,7 +415,7 @@
    */
   function initFormHandlers() {
     // Form settings
-    $("#fluentwa-form-settings").on("submit", function (e) {
+    $("#wanotify-form-settings").on("submit", function (e) {
       e.preventDefault();
 
       // Jalankan validasi sebelum menyimpan
@@ -386,8 +425,8 @@
       }
 
       saveFormSettings($(this));
-      initialFormData["fluentwa-form-settings"] = getFormState(
-        "#fluentwa-form-settings"
+      initialFormData["wanotify-form-settings"] = getFormState(
+        "#wanotify-form-settings"
       );
     });
 
@@ -409,20 +448,20 @@
     let isValid = true;
 
     // Reset semua pesan error
-    $(".fluentwa-field-error").remove();
-    $(".fluentwa-form-input").removeClass("has-error");
+    $(".wanotify-field-error").remove();
+    $(".wanotify-form-input").removeClass("has-error");
     $(".recipient-mode-settings").removeClass("has-error");
 
     if (selectedMode === "manual") {
       const customNumber = $('input[name="recipient"]').val().trim();
 
-      // Gunakan FluentWAValidator untuk validasi format nomor
+      // Gunakan WANotifyValidator untuk validasi format nomor
       const validationResult =
-        FluentWAValidator.validateWhatsAppNumber(customNumber);
+        WANotifyValidator.validateWhatsAppNumber(customNumber);
 
       if (!validationResult.isValid) {
         $('input[name="recipient"]').after(
-          '<div class="fluentwa-field-error">' +
+          '<div class="wanotify-field-error">' +
             validationResult.message +
             "</div>"
         );
@@ -441,7 +480,7 @@
       const selectedField = $('select[name="recipient_field"]').val();
       if (!selectedField || selectedField === "--" || selectedField === "") {
         $('select[name="recipient_field"]').after(
-          '<div class="fluentwa-field-error">Silakan pilih field</div>'
+          '<div class="wanotify-field-error">Silakan pilih field</div>'
         );
         $(".recipient-dynamic-settings").addClass("has-error");
         isValid = false;
@@ -466,27 +505,27 @@
    * Save general settings via AJAX
    */
   function saveGeneralSettings($form) {
-    const btnText = $form.find(".fluentwa-submit-btn").text();
+    const btnText = $form.find(".wanotify-submit-btn").text();
     $form
-      .find(".fluentwa-submit-btn")
-      .text(fluentWA.i18n.saving)
+      .find(".wanotify-submit-btn")
+      .text(wanotify.i18n.saving)
       .prop("disabled", true);
 
     // Hapus semua error yang ada sebelumnya
-    $form.find(".fluentwa-field-error").remove();
-    $form.find(".fluentwa-form-input").removeClass("has-error");
+    $form.find(".wanotify-field-error").remove();
+    $form.find(".wanotify-form-input").removeClass("has-error");
 
     // Format nomor WhatsApp sebelum mengirim
     const recipientValue = $form.find("#default_recipient").val();
     const recipientValidation =
-      FluentWAValidator.validateWhatsAppNumber(recipientValue);
+      WANotifyValidator.validateWhatsAppNumber(recipientValue);
     const formattedRecipient = recipientValidation.isValid
       ? recipientValidation.formatted
       : recipientValue;
 
     const data = {
-      action: "fluentwa_save_settings",
-      nonce: fluentWA.nonce,
+      action: "wanotify_save_settings",
+      nonce: wanotify.nonce,
       api_url: $form.find("#api_url").val(),
       access_token: $form.find("#access_token").val(),
       default_recipient: formattedRecipient,
@@ -494,12 +533,12 @@
       enable_logging: $form.find("#enable_logging").is(":checked"),
     };
 
-    $.post(fluentWA.ajax_url, data, function (response) {
+    $.post(wanotify.ajax_url, data, function (response) {
       if (response.success) {
         showNotification("success", response.data.message);
         formIsDirty = false; // Reset flag setelah penyimpanan berhasil
-        initialFormData["fluentwa-general-settings"] = getFormState(
-          "#fluentwa-general-settings"
+        initialFormData["wanotify-general-settings"] = getFormState(
+          "#wanotify-general-settings"
         ); // Update data awal
         updateDirtyStateIndicator();
       } else {
@@ -511,18 +550,18 @@
           displayFieldErrors($form, response.data.errors);
           
           // Fokus ke field error pertama
-          $form.find(".fluentwa-form-input.has-error")
+          $form.find(".wanotify-form-input.has-error")
             .first()
             .find("input, textarea, select")
             .focus();
         }
       }
 
-      $form.find(".fluentwa-submit-btn").text(btnText).prop("disabled", false);
+      $form.find(".wanotify-submit-btn").text(btnText).prop("disabled", false);
     }).fail(function (xhr, status, error) {
       console.error("AJAX error:", status, error, xhr.responseText);
       showNotification("error", "Terjadi kesalahan server. Silakan coba lagi.");
-      $form.find(".fluentwa-submit-btn").text(btnText).prop("disabled", false);
+      $form.find(".wanotify-submit-btn").text(btnText).prop("disabled", false);
     });
   }
 
@@ -540,11 +579,11 @@
         
         if ($field.length) {
           // Tambahkan kelas error pada container
-          const $container = $field.closest(".fluentwa-form-input");
+          const $container = $field.closest(".wanotify-form-input");
           $container.addClass("has-error");
           
           // Tambahkan pesan error di bawah field
-          $field.after('<div class="fluentwa-field-error">' + errorMessage + '</div>');
+          $field.after('<div class="wanotify-field-error">' + errorMessage + '</div>');
           
           console.log(`Error pada field ${fieldName}: ${errorMessage}`);
         }
@@ -553,92 +592,117 @@
   }
 
   /**
-   * Save form settings via AJAX
+   * Save form settings via AJAX - FIXED FOR AFTER TEST ISSUES
    */
   function saveFormSettings($form) {
     const formId = $form.data("form-id");
-    const btnText = $form.find(".fluentwa-submit-btn").text();
+    const btnText = $form.find(".wanotify-submit-btn").text();
 
     $form
-      .find(".fluentwa-submit-btn")
-      .text(fluentWA.i18n.saving)
+      .find(".wanotify-submit-btn")
+      .text(wanotify.i18n.saving)
       .prop("disabled", true);
 
     // Tangkap nilai enabled secara eksplisit
     const isEnabled = $form.find("#enabled").is(":checked");
-    console.log(
-      `Saving form ${formId} settings with enabled = ${isEnabled ? "1" : "0"}`
-    );
+    
+    // Debug info
+    console.log(`Saving form ${formId} settings with enabled = ${isEnabled ? "1" : "0"}`);
 
-    // Menyusun data standar
-    const data = {
-      action: "fluentwa_save_form_settings",
-      nonce: fluentWA.nonce,
-      form_id: formId,
-      enabled: isEnabled ? "1" : "0", // Kirim sebagai string '1' atau '0'
-      recipient_mode: $form.find('input[name="recipient_mode"]:checked').val(),
-      recipient: $form.find('input[name="recipient"]').val(),
-      recipient_field: $form.find('select[name="recipient_field"]').val(),
-      message_template: $form.find("#message_template").val(),
-    };
-
+    // Kumpulkan semua form data
+    const formData = new FormData();
+    formData.append('action', 'wanotify_save_form_settings');
+    formData.append('nonce', wanotify.nonce);
+    formData.append('form_id', formId);
+    formData.append('enabled', isEnabled ? '1' : '0'); // Kirim sebagai string '1' atau '0'
+    
+    // PERBAIKAN: Tambahkan flag test_completed jika save dilakukan setelah test notification
+    if (window.wanotifyTestCompleted) {
+      formData.append('test_completed', 'true');
+      console.log("Adding test_completed flag");
+    }
+    
+    // Ambil recipient_mode, pilih nilai yang diseleksi
+    const recipientMode = $form.find('input[name="recipient_mode"]:checked').val();
+    formData.append('recipient_mode', recipientMode);
+    
+    formData.append('recipient', $form.find('input[name="recipient"]').val());
+    formData.append('recipient_field', $form.find('select[name="recipient_field"]').val());
+    formData.append('message_template', $form.find('#message_template').val());
+    
     // Handle included fields
-    if ($form.find("#include_all_fields").is(":checked")) {
-      data.included_fields = ["*"]; // All fields
+    if ($form.find('#include_all_fields').is(':checked')) {
+        formData.append('included_fields[]', '*');
     } else {
-      data.included_fields = [];
-      $form.find('input[name="included_fields[]"]:checked').each(function () {
-        data.included_fields.push($(this).val());
-      });
+        $form.find('input[name="included_fields[]"]:checked').each(function() {
+            formData.append('included_fields[]', $(this).val());
+        });
     }
 
-    // Kirim request AJAX standar
-    $.post(fluentWA.ajax_url, data, function (response) {
-      console.log("Save form settings response:", response);
+    // Kirim request dengan FormData untuk menghindari masalah encoding
+    $.ajax({
+        url: wanotify.ajax_url,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log("Save form settings response:", response);
 
-      if (response.success) {
-        showNotification("success", response.data.message);
-        formIsDirty = false;
+            if (response.success) {
+                // PERBAIKAN: Pesan sukses yang lebih akurat
+                let message = response.data.message;
+                
+                // Setelah save, reset flag test_completed
+                window.wanotifyTestCompleted = false;
+                
+                showNotification("success", message);
+                formIsDirty = false;
 
-        // Simpan status untuk navigasi kembali
-        window.fluentwaLastSavedStatus = {
-          formId: formId,
-          enabled: response.data.status,
-        };
+                // Simpan status untuk navigasi kembali
+                window.wanotifyLastSavedStatus = {
+                    formId: formId,
+                    enabled: response.data.status,
+                };
 
-        // Simpan ke localStorage
-        localStorage.setItem(
-          "fluentwaLastStatus",
-          JSON.stringify(window.fluentwaLastSavedStatus)
-        );
+                // Simpan ke localStorage
+                localStorage.setItem(
+                    "wanotifyLastStatus",
+                    JSON.stringify(window.wanotifyLastSavedStatus)
+                );
 
-        // Update data awal
-        initialFormData["fluentwa-form-settings"] = getFormState(
-          "#fluentwa-form-settings"
-        );
-        updateDirtyStateIndicator();
-      } else {
-        // Tampilkan pesan error umum
-        showNotification("error", response.data.message);
-        
-        // Tampilkan error per field jika ada
-        if (response.data.errors) {
-          displayFieldErrors($form, response.data.errors);
-          
-          // Fokus ke field error pertama
-          $form.find(".fluentwa-form-input.has-error")
-            .first()
-            .find("input, textarea, select")
-            .focus();
+                // Update data awal
+                initialFormData["wanotify-form-settings"] = getFormState(
+                    "#wanotify-form-settings"
+                );
+                updateDirtyStateIndicator();
+            } else {
+                // Tampilkan pesan error umum
+                showNotification("error", response.data.message);
+                
+                // Tampilkan error per field jika ada
+                if (response.data.errors) {
+                    displayFieldErrors($form, response.data.errors);
+                }
+            }
+
+            $form.find(".wanotify-submit-btn").text(btnText).prop("disabled", false);
+        },
+        error: function(xhr, status, error) {
+            console.error("Save form settings failed:", status, error);
+            console.log("Response text:", xhr.responseText);
+            
+            // PERBAIKAN: Log lebih detail untuk error
+            try {
+                const responseObj = JSON.parse(xhr.responseText);
+                console.log("Parsed error response:", responseObj);
+            } catch (e) {
+                console.log("Could not parse error response");
+            }
+            
+            showNotification("error", "Terjadi kesalahan server. Silakan coba lagi.");
+            $form.find(".wanotify-submit-btn").text(btnText).prop("disabled", false);
         }
-      }
-
-      $form.find(".fluentwa-submit-btn").text(btnText).prop("disabled", false);
-    }).fail(function (xhr, status, error) {
-      console.error("Save form settings failed:", status, error);
-      console.log("Response text:", xhr.responseText);
-      showNotification("error", "Terjadi kesalahan server. Silakan coba lagi.");
-      $form.find(".fluentwa-submit-btn").text(btnText).prop("disabled", false);
     });
   }
 
@@ -646,7 +710,7 @@
    * Tambahkan event handler untuk tombol "Kembali ke Daftar" - PERBAIKAN LANJUTAN
    */
   function initBackButtonHandler() {
-    $(".fluentwa-back-btn").on("click", function (e) {
+    $(".wanotify-back-btn").on("click", function (e) {
       // Mencegah navigasi default
       e.preventDefault();
 
@@ -664,8 +728,8 @@
       }
 
       // Jika kita berada di halaman konfigurasi formulir
-      if ($("#fluentwa-form-settings").length) {
-        const formId = $("#fluentwa-form-settings").data("form-id");
+      if ($("#wanotify-form-settings").length) {
+        const formId = $("#wanotify-form-settings").data("form-id");
         const isEnabled = $("#enabled").is(":checked");
 
         console.log(
@@ -674,7 +738,7 @@
 
         // Simpan status terakhir yang kita lihat
         localStorage.setItem(
-          "fluentwaLastStatus",
+          "wanotifyLastStatus",
           JSON.stringify({
             formId: formId,
             enabled: isEnabled,
@@ -702,11 +766,11 @@
     }, 300);
 
     // PERBAIKAN: Cek apakah kita baru saja kembali dari halaman konfigurasi form
-    if (sessionStorage.getItem("fluentwaBackToList") === "true") {
+    if (sessionStorage.getItem("wanotifyBackToList") === "true") {
       console.log("Detected back navigation from form configuration");
 
       // Hapus flag
-      sessionStorage.removeItem("fluentwaBackToList");
+      sessionStorage.removeItem("wanotifyBackToList");
 
       // Tambahkan force refresh dengan delay lebih panjang
       setTimeout(function () {
@@ -723,17 +787,17 @@
    * Test WhatsApp connection
    */
   function testConnection() {
-    const $btn = $("#fluentwa-test-connection");
+    const $btn = $("#wanotify-test-connection");
     const btnText = $btn.text();
 
-    $btn.text(fluentWA.i18n.testing).prop("disabled", true);
+    $btn.text(wanotify.i18n.testing).prop("disabled", true);
 
     const data = {
-      action: "fluentwa_test_connection",
-      nonce: fluentWA.nonce,
+      action: "wanotify_test_connection",
+      nonce: wanotify.nonce,
     };
 
-    $.post(fluentWA.ajax_url, data, function (response) {
+    $.post(wanotify.ajax_url, data, function (response) {
       if (response.success) {
         showNotification("success", response.data.message);
       } else {
@@ -748,12 +812,22 @@
   }
 
   /**
-   * Test form notification - PERBAIKAN
+   * Test form notification - PERBAIKAN UNTUK FORM TIDAK AKTIF
    */
   function testFormNotification() {
-    const formId = $("#fluentwa-form-settings").data("form-id");
-    const $btn = $("#fluentwa-test-form-notification");
+    const formId = $("#wanotify-form-settings").data("form-id");
+    const $btn = $("#wanotify-test-form-notification");
     const btnText = $btn.text();
+
+    // PERBAIKAN: Cek status aktif form terlebih dahulu
+    const isEnabled = $("#enabled").is(":checked");
+    if (!isEnabled) {
+      showNotification(
+        "error",
+        "Notifikasi tidak diaktifkan untuk formulir ini. Aktifkan terlebih dahulu untuk melakukan pengujian."
+      );
+      return;
+    }
 
     // Ambil mode penerima yang dipilih
     const selectedMode = $('input[name="recipient_mode"]:checked').val();
@@ -779,25 +853,49 @@
       return;
     }
 
-    $btn.text(fluentWA.i18n.testing).prop("disabled", true);
+    $btn.text(wanotify.i18n.testing).prop("disabled", true);
 
     // Kirim mode penerima yang dipilih
     const data = {
-      action: "fluentwa_test_form_notification",
-      nonce: fluentWA.nonce,
+      action: "wanotify_test_form_notification",
+      nonce: wanotify.nonce,
       form_id: formId,
       recipient_mode: selectedMode, // Tambah parameter mode penerima
     };
 
-    $.post(fluentWA.ajax_url, data, function (response) {
+    $.post(wanotify.ajax_url, data, function (response) {
       if (response.success) {
         showNotification("success", response.data.message);
+        
+        // PERBAIKAN: Simpan state form saat ini sebagai initial data untuk mencegah false "dirty state"
+        // setelah test notification
+        initialFormData["wanotify-form-settings"] = getFormState(
+          "#wanotify-form-settings"
+        );
+        
+        // Reset flag dirty karena kita sudah meng-update initial state
+        formIsDirty = false;
+        updateDirtyStateIndicator();
+        
+        // Set flag bahwa test selesai untuk dikirim saat save form
+        window.wanotifyTestCompleted = true;
       } else {
         showNotification("error", response.data.message);
       }
 
       $btn.text(btnText).prop("disabled", false);
-    }).fail(function () {
+    }).fail(function (xhr, status, error) {
+      console.error("Test form notification failed:", status, error);
+      console.log("Response text:", xhr.responseText);
+      
+      // PERBAIKAN: Tambahkan pencatatan error detail
+      try {
+        const responseObj = JSON.parse(xhr.responseText);
+        console.log("Parsed error response:", responseObj);
+      } catch (e) {
+        console.log("Could not parse error response");
+      }
+      
       showNotification("error", "Terjadi kesalahan server. Silakan coba lagi.");
       $btn.text(btnText).prop("disabled", false);
     });
@@ -807,24 +905,24 @@
    * Clear logs
    */
   function clearLogs() {
-    if (!confirm(fluentWA.i18n.confirm_clear_logs)) {
+    if (!confirm(wanotify.i18n.confirm_clear_logs)) {
       return;
     }
 
-    const $btn = $("#fluentwa-clear-logs");
+    const $btn = $("#wanotify-clear-logs");
     const btnText = $btn.text();
 
     $btn.text("Menghapus...").prop("disabled", true);
 
     const data = {
-      action: "fluentwa_clear_logs",
-      nonce: fluentWA.nonce,
+      action: "wanotify_clear_logs",
+      nonce: wanotify.nonce,
     };
 
-    $.post(fluentWA.ajax_url, data, function (response) {
+    $.post(wanotify.ajax_url, data, function (response) {
       if (response.success) {
         showNotification("success", response.data.message);
-        $("#fluentwa-logs-container").html("<p>Log telah dibersihkan.</p>");
+        $("#wanotify-logs-container").html("<p>Log telah dibersihkan.</p>");
       } else {
         showNotification("error", response.data.message);
       }
@@ -842,22 +940,22 @@
   function showNotification(type, message) {
     const icon = type === "success" ? "dashicons-yes-alt" : "dashicons-warning";
     const notificationHtml = `
-            <div class="fluentwa-notification fluentwa-${type}">
-                <div class="fluentwa-notification-icon">
+            <div class="wanotify-notification wanotify-${type}">
+                <div class="wanotify-notification-icon">
                     <span class="dashicons ${icon}"></span>
                 </div>
-                <div class="fluentwa-notification-message">${message}</div>
-                <div class="fluentwa-notification-close">
+                <div class="wanotify-notification-message">${message}</div>
+                <div class="wanotify-notification-close">
                     <span class="dashicons dashicons-no-alt"></span>
                 </div>
             </div>
         `;
 
-    $("#fluentwa-notification-area").append(notificationHtml);
+    $("#wanotify-notification-area").append(notificationHtml);
 
     // Auto-hide after 5 seconds
     setTimeout(function () {
-      $(".fluentwa-notification")
+      $(".wanotify-notification")
         .first()
         .fadeOut(300, function () {
           $(this).remove();
@@ -908,8 +1006,8 @@
    */
   function initDirtyStateIndicator() {
     // Tambahkan elemen indikator ke header
-    $(".fluentwa-header").append(
-      '<span id="fluentwa-dirty-state" class="fluentwa-dirty-state"></span>'
+    $(".wanotify-header").append(
+      '<span id="wanotify-dirty-state" class="wanotify-dirty-state"></span>'
     );
     updateDirtyStateIndicator();
   }
@@ -919,11 +1017,11 @@
    */
   function updateDirtyStateIndicator() {
     if (formIsDirty) {
-      $("#fluentwa-dirty-state")
+      $("#wanotify-dirty-state")
         .text("Perubahan Belum Disimpan")
         .addClass("active");
     } else {
-      $("#fluentwa-dirty-state").text("").removeClass("active");
+      $("#wanotify-dirty-state").text("").removeClass("active");
     }
   }
 
@@ -931,30 +1029,30 @@
    * Inisialisasi toggle status formulir - PERBAIKAN UTAMA
    */
   function initFormStatusToggles() {
-    $(document).on("change", ".fluentwa-status-toggle", function () {
+    $(document).on("change", ".wanotify-status-toggle", function () {
       const $toggle = $(this);
       const formId = $toggle.data("form-id");
       const isEnabled = $toggle.is(":checked");
-      const $statusText = $toggle.siblings(".fluentwa-toggle-status");
-      const $toggleContainer = $toggle.closest(".fluentwa-toggle");
+      const $statusText = $toggle.siblings(".wanotify-toggle-status");
+      const $toggleContainer = $toggle.closest(".wanotify-toggle");
 
       // Simpan status awal untuk rollback jika gagal
       const originalStatus = !isEnabled;
 
       // Tambahkan kelas loading
-      $toggleContainer.addClass("fluentwa-loading");
+      $toggleContainer.addClass("wanotify-loading");
 
       // Update text sementara
       $statusText.text(
         isEnabled
-          ? fluentWA.i18n.activating || "Mengaktifkan..."
-          : fluentWA.i18n.deactivating || "Menonaktifkan..."
+          ? wanotify.i18n.activating || "Mengaktifkan..."
+          : wanotify.i18n.deactivating || "Menonaktifkan..."
       );
 
       // Kirim AJAX request
-      $.post(fluentWA.ajax_url, {
-        action: "fluentwa_toggle_form_status",
-        nonce: fluentWA.nonce,
+      $.post(wanotify.ajax_url, {
+        action: "wanotify_toggle_form_status",
+        nonce: wanotify.nonce,
         form_id: formId,
         enabled: isEnabled,
       })
@@ -994,7 +1092,7 @@
         })
         .always(function () {
           // Hapus kelas loading
-          $toggleContainer.removeClass("fluentwa-loading");
+          $toggleContainer.removeClass("wanotify-loading");
         });
     });
 
@@ -1007,14 +1105,14 @@
    */
   function refreshFormStatuses() {
     // Hanya lakukan jika ada toggle status di halaman
-    if ($(".fluentwa-status-toggle").length === 0) {
+    if ($(".wanotify-status-toggle").length === 0) {
       console.log("No form status toggles found on page");
       return;
     }
 
     // Kumpulkan semua ID formulir di halaman
     const formIds = [];
-    $(".fluentwa-status-toggle").each(function () {
+    $(".wanotify-status-toggle").each(function () {
       formIds.push($(this).data("form-id"));
     });
 
@@ -1026,9 +1124,9 @@
     console.log("Refreshing form statuses for IDs:", formIds);
 
     // Ambil status terbaru dari server
-    $.post(fluentWA.ajax_url, {
-      action: "fluentwa_get_forms_status",
-      nonce: fluentWA.nonce,
+    $.post(wanotify.ajax_url, {
+      action: "wanotify_get_forms_status",
+      nonce: wanotify.nonce,
       form_ids: formIds,
     })
       .done(function (response) {
@@ -1044,12 +1142,12 @@
             );
 
             const $toggle = $(
-              `.fluentwa-status-toggle[data-form-id="${formId}"]`
+              `.wanotify-status-toggle[data-form-id="${formId}"]`
             );
             if ($toggle.length) {
               $toggle.prop("checked", status);
               $toggle
-                .siblings(".fluentwa-toggle-status")
+                .siblings(".wanotify-toggle-status")
                 .text(status ? "Aktif" : "Tidak Aktif");
               console.log(`Updated UI for form ${formId}`);
             } else {
@@ -1065,7 +1163,7 @@
       })
       .always(function () {
         // Cek localStorage untuk status terakhir yang disimpan
-        const lastStatusJson = localStorage.getItem("fluentwaLastStatus");
+        const lastStatusJson = localStorage.getItem("wanotifyLastStatus");
         if (lastStatusJson) {
           try {
             const lastStatus = JSON.parse(lastStatusJson);
@@ -1073,7 +1171,7 @@
 
             // Terapkan status yang disimpan di localStorage jika form ada di halaman
             const $toggle = $(
-              `.fluentwa-status-toggle[data-form-id="${lastStatus.formId}"]`
+              `.wanotify-status-toggle[data-form-id="${lastStatus.formId}"]`
             );
             if ($toggle.length) {
               console.log(
@@ -1083,12 +1181,12 @@
               );
               $toggle.prop("checked", lastStatus.enabled);
               $toggle
-                .siblings(".fluentwa-toggle-status")
+                .siblings(".wanotify-toggle-status")
                 .text(lastStatus.enabled ? "Aktif" : "Tidak Aktif");
             }
 
             // Hapus item dari localStorage setelah digunakan
-            localStorage.removeItem("fluentwaLastStatus");
+            localStorage.removeItem("wanotifyLastStatus");
           } catch (e) {
             console.error("Error parsing last status from localStorage:", e);
           }
@@ -1101,7 +1199,7 @@
    */
   function updateFormSettingsAfterToggle(formId, enabled) {
     // Cek apakah halaman konfigurasi formulir dengan ID ini sedang terbuka
-    const $formSettings = $("#fluentwa-form-settings");
+    const $formSettings = $("#wanotify-form-settings");
 
     if (
       $formSettings.length &&
@@ -1114,8 +1212,8 @@
       }
 
       // Perbarui initialFormData untuk mencegah false detection "unsaved changes"
-      initialFormData["fluentwa-form-settings"] = getFormState(
-        "#fluentwa-form-settings"
+      initialFormData["wanotify-form-settings"] = getFormState(
+        "#wanotify-form-settings"
       );
 
       // Reset flag dirty karena perubahan sudah disimpan
@@ -1129,7 +1227,7 @@
    */
   function initDynamicRecipientMode() {
     // Menangani kasus ketika field telepon tidak tersedia
-    $(".fluentwa-radio-disabled").on("click", function (e) {
+    $(".wanotify-radio-disabled").on("click", function (e) {
       // Jika radio button dalam container ini, cegah pemilihan
       if ($(this).find('input[type="radio"]').is(":disabled")) {
         e.preventDefault();
@@ -1137,7 +1235,7 @@
         // Tampilkan pesan toast notification
         showNotification(
           "info",
-          fluentWA.i18n.phone_field_required ||
+          wanotify.i18n.phone_field_required ||
             "Opsi ini tidak tersedia karena tidak ada field telepon di formulir"
         );
 
@@ -1149,14 +1247,14 @@
     let needsAutoAdjustment = false;
 
     // Jika opsi dynamic terpilih tetapi dinonaktifkan (tidak ada field telepon)
-    if ($('.fluentwa-radio-disabled input[type="radio"]:checked').length) {
+    if ($('.wanotify-radio-disabled input[type="radio"]:checked').length) {
       needsAutoAdjustment = true;
     }
 
     // Jika perlu penyesuaian otomatis
     if (needsAutoAdjustment) {
       // Simpan state form sebelum perubahan
-      const formId = $("#fluentwa-form-settings").data("form-id");
+      const formId = $("#wanotify-form-settings").data("form-id");
 
       // Beralih ke "default" jika dynamic terpilih tetapi dinonaktifkan
       $('input[name="recipient_mode"][value="default"]').prop("checked", true);
@@ -1167,7 +1265,7 @@
       // Tambahkan notifikasi visual langsung, tidak menunggu AJAX response
       showNotification(
         "info",
-        fluentWA.i18n.settings_auto_adjusted ||
+        wanotify.i18n.settings_auto_adjusted ||
           "Pengaturan disesuaikan otomatis karena field telepon tidak tersedia lagi"
       );
 
@@ -1182,8 +1280,8 @@
   function saveAutoAdjustedSettings(formId) {
     // Ambil nilai form saat ini
     const data = {
-      action: "fluentwa_auto_adjust_form_settings",
-      nonce: fluentWA.nonce,
+      action: "wanotify_auto_adjust_form_settings",
+      nonce: wanotify.nonce,
       form_id: formId,
       enabled: $("#enabled").is(":checked") ? "1" : "0",
       recipient_mode: "default", // Kita paksa ke default
@@ -1203,20 +1301,20 @@
     }
 
     // Post dengan quiet save (tanpa UI feedback)
-    $.post(fluentWA.ajax_url, data, function (response) {
+    $.post(wanotify.ajax_url, data, function (response) {
       if (response.success) {
         console.log("Form settings auto-adjusted successfully");
 
         // Tampilkan notifikasi kecil
         showNotification(
           "info",
-          fluentWA.i18n.settings_auto_adjusted ||
+          wanotify.i18n.settings_auto_adjusted ||
             "Pengaturan disesuaikan otomatis karena field telepon tidak tersedia"
         );
 
         // Yang paling penting: refresh state awal form agar form tidak terdeteksi "dirty"
-        initialFormData["fluentwa-form-settings"] = getFormState(
-          "#fluentwa-form-settings"
+        initialFormData["wanotify-form-settings"] = getFormState(
+          "#wanotify-form-settings"
         );
         formIsDirty = false;
         updateDirtyStateIndicator();
@@ -1247,8 +1345,8 @@
       const selectedMode = $('input[name="recipient_mode"]:checked').val();
 
       // Reset semua pesan error dan kelas has-error
-      $(".fluentwa-field-error").remove();
-      $(".fluentwa-form-input").removeClass("has-error");
+      $(".wanotify-field-error").remove();
+      $(".wanotify-form-input").removeClass("has-error");
       $(".recipient-mode-settings").removeClass("has-error");
 
       if (selectedMode === "manual") {
@@ -1275,7 +1373,7 @@
     });
 
     // Validasi tes notifikasi sebelum mengirim
-    $("#fluentwa-test-form-notification").on("click", function (e) {
+    $("#wanotify-test-form-notification").on("click", function (e) {
       if (!validateRecipientSettings()) {
         e.preventDefault();
         return false;
@@ -1291,15 +1389,15 @@
     const $container = $(".recipient-manual-settings");
 
     // Hapus error sebelumnya
-    $(".fluentwa-field-error", $container).remove();
+    $(".wanotify-field-error", $container).remove();
     $container.removeClass("has-error");
 
     // Gunakan validator WhatsApp number
-    const result = FluentWAValidator.validateWhatsAppNumber($input.val());
+    const result = WANotifyValidator.validateWhatsAppNumber($input.val());
 
     if (!result.isValid) {
       $input.after(
-        '<div class="fluentwa-field-error">' + result.message + "</div>"
+        '<div class="wanotify-field-error">' + result.message + "</div>"
       );
       $container.addClass("has-error");
       return false;
@@ -1321,12 +1419,12 @@
     const $container = $(".recipient-dynamic-settings");
 
     // Hapus error sebelumnya
-    $(".fluentwa-field-error", $container).remove();
+    $(".wanotify-field-error", $container).remove();
     $container.removeClass("has-error");
 
     if ($select.val() === "" || $select.val() === "--") {
       $select.after(
-        '<div class="fluentwa-field-error">Silakan pilih field</div>'
+        '<div class="wanotify-field-error">Silakan pilih field</div>'
       );
       $container.addClass("has-error");
       return false;
@@ -1339,25 +1437,25 @@
    * Inisialisasi validasi untuk pengaturan umum
    */
   function initGeneralSettingsValidation() {
-    const $form = $("#fluentwa-general-settings");
+    const $form = $("#wanotify-general-settings");
 
     if (!$form.length) return;
 
     // Validasi URL API
     $("#api_url").on("blur", function () {
-      validateField($(this), FluentWAValidator.validateApiUrl);
+      validateField($(this), WANotifyValidator.validateApiUrl);
     });
 
     // Validasi Token Autentikasi
     $("#access_token").on("blur", function () {
-      validateField($(this), FluentWAValidator.validateAccessToken);
+      validateField($(this), WANotifyValidator.validateAccessToken);
     });
 
     // Validasi Nomor WhatsApp Default
     $("#default_recipient").on("blur", function () {
       const result = validateField(
         $(this),
-        FluentWAValidator.validateWhatsAppNumber
+        WANotifyValidator.validateWhatsAppNumber
       );
       if (result.isValid && result.formatted !== $(this).val()) {
         $(this).val(result.formatted);
@@ -1372,7 +1470,7 @@
     $("#default_template").on("blur", function () {
       const result = validateField(
         $(this),
-        FluentWAValidator.validateMessageTemplate
+        WANotifyValidator.validateMessageTemplate
       );
       if (result.isValid && result.isWarning) {
         showFieldWarning($(this), result.message);
@@ -1389,28 +1487,28 @@
       // Validasi URL API
       const apiUrlResult = validateField(
         $("#api_url"),
-        FluentWAValidator.validateApiUrl
+        WANotifyValidator.validateApiUrl
       );
       if (!apiUrlResult.isValid) isValid = false;
 
       // Validasi Token Autentikasi
       const tokenResult = validateField(
         $("#access_token"),
-        FluentWAValidator.validateAccessToken
+        WANotifyValidator.validateAccessToken
       );
       if (!tokenResult.isValid) isValid = false;
 
       // Validasi Nomor WhatsApp Default
       const recipientResult = validateField(
         $("#default_recipient"),
-        FluentWAValidator.validateWhatsAppNumber
+        WANotifyValidator.validateWhatsAppNumber
       );
       if (!recipientResult.isValid) isValid = false;
 
       // Validasi Template Default
       const templateResult = validateField(
         $("#default_template"),
-        FluentWAValidator.validateMessageTemplate
+        WANotifyValidator.validateMessageTemplate
       );
       if (!templateResult.isValid) isValid = false;
 
@@ -1420,7 +1518,7 @@
       } else {
         showNotification("error", "Harap perbaiki kesalahan pada formulir");
         // Fokus ke field error pertama
-        $(".fluentwa-form-input.has-error")
+        $(".wanotify-form-input.has-error")
           .first()
           .find("input, textarea")
           .focus();
@@ -1454,9 +1552,9 @@
    * @param {string} message Pesan error
    */
   function showFieldError($field, message) {
-    const $container = $field.closest(".fluentwa-form-input");
+    const $container = $field.closest(".wanotify-form-input");
     $container.addClass("has-error");
-    $field.after('<div class="fluentwa-field-error">' + message + "</div>");
+    $field.after('<div class="wanotify-field-error">' + message + "</div>");
   }
 
   /**
@@ -1465,9 +1563,9 @@
    * @param {string} message Pesan peringatan
    */
   function showFieldWarning($field, message) {
-    const $container = $field.closest(".fluentwa-form-input");
+    const $container = $field.closest(".wanotify-form-input");
     $container.addClass("has-warning");
-    $field.after('<div class="fluentwa-field-warning">' + message + "</div>");
+    $field.after('<div class="wanotify-field-warning">' + message + "</div>");
   }
 
   /**
@@ -1475,9 +1573,9 @@
    * @param {jQuery} $field Field yang akan dihapus errornya
    */
   function removeFieldError($field) {
-    const $container = $field.closest(".fluentwa-form-input");
+    const $container = $field.closest(".wanotify-form-input");
     $container.removeClass("has-error has-warning");
-    $field.siblings(".fluentwa-field-error, .fluentwa-field-warning").remove();
+    $field.siblings(".wanotify-field-error, .wanotify-field-warning").remove();
   }
 
   /**
@@ -1485,14 +1583,14 @@
    */
   function initConfigChecker() {
     // Skip jika di halaman pengaturan umum
-    if ($("#fluentwa-general-settings").length) return;
+    if ($("#wanotify-general-settings").length) return;
 
     // Cek status konfigurasi melalui AJAX
     $.post(
-      fluentWA.ajax_url,
+      wanotify.ajax_url,
       {
-        action: "fluentwa_check_configuration",
-        nonce: fluentWA.nonce,
+        action: "wanotify_check_configuration",
+        nonce: wanotify.nonce,
       },
       function (response) {
         if (!response.success || !response.data.is_complete) {
@@ -1532,13 +1630,13 @@
     message += fieldMessages.join(", ");
     message +=
       '<br><a href="' +
-      fluentWA.settings_url +
+      wanotify.settings_url +
       '" class="button button-primary button-small">Lengkapi Konfigurasi Sekarang</a>';
 
     // Tampilkan banner yang persisten
-    if ($(".fluentwa-config-notice").length === 0) {
-      $(".fluentwa-header").after(
-        '<div class="fluentwa-config-notice">' + message + "</div>"
+    if ($(".wanotify-config-notice").length === 0) {
+      $(".wanotify-header").after(
+        '<div class="wanotify-config-notice">' + message + "</div>"
       );
     }
   }
@@ -1548,18 +1646,18 @@
    */
   function disableUnconfiguredFeatures() {
     // Disable tombol tes notifikasi
-    $("#fluentwa-test-form-notification")
+    $("#wanotify-test-form-notification")
       .addClass("disabled")
       .prop("disabled", true)
       .attr("title", "Konfigurasi dasar belum lengkap");
 
     // Tambahkan info pada tombol
-    $("#fluentwa-test-form-notification").after(
-      '<div class="fluentwa-feature-blocked-info">Fitur ini memerlukan konfigurasi lengkap</div>'
+    $("#wanotify-test-form-notification").after(
+      '<div class="wanotify-feature-blocked-info">Fitur ini memerlukan konfigurasi lengkap</div>'
     );
 
     // Disable toggle status formulir
-    $(".fluentwa-status-toggle").each(function () {
+    $(".wanotify-status-toggle").each(function () {
       const $this = $(this);
       if (!$this.hasClass("disabled")) {
         $this

@@ -135,11 +135,53 @@ class AdminPage
             WANOTIFY_VERSION
         );
 
-        // Daftarkan JS
+        // Daftarkan modul JS dasar
+        $base_modules = array(
+            'validator',
+            'notifications',
+            'form-utils',
+            'ui-state'
+        );
+
+        // Daftarkan modul JS form-settings yang baru
+        $form_modules = array(
+            'form-validation',
+            'test-handlers',
+            'recipient-manager',
+            'form-data-handler',
+            'form-ui-manager',
+            'form-settings'
+        );
+
+        // Daftarkan modul lainnya
+        $other_modules = array(
+            'form-toggle',
+            'config-checker'
+        );
+
+        // Gabungkan semua modul
+        $js_modules = array_merge($base_modules, $form_modules, $other_modules);
+
+        // Daftarkan setiap modul dengan dependensi jQuery
+        foreach ($js_modules as $module) {
+            wp_enqueue_script(
+                "wanotify-{$module}",
+                WANOTIFY_PLUGIN_URL . "assets/js/modules/{$module}.js",
+                array('jquery'),
+                WANOTIFY_VERSION,
+                true
+            );
+        }
+
+        // Daftarkan script utama dengan dependensi pada modul
+        $dependencies = array_merge(['jquery'], array_map(function($module) {
+            return "wanotify-{$module}";
+        }, $js_modules));
+
         wp_enqueue_script(
             'wanotify-admin-script',
             WANOTIFY_PLUGIN_URL . 'assets/js/admin-script.js',
-            array('jquery'),
+            $dependencies,
             WANOTIFY_VERSION,
             true
         );

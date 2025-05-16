@@ -1,0 +1,56 @@
+/**
+ * WhatsApp Notify - Header Styles
+ * Styling untuk bagian header admin
+ */
+.wanotify-header {
+    background: #fff;
+    padding: 20px 20px 0 20px;
+    margin: 0 -20px 0;
+    border-bottom: 1px solid var(--wanotify-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.wanotify-header h1 {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+}
+
+.wanotify-header h1 .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    margin-right: 10px;
+    color: var(--wanotify-primary);
+}
+
+.wanotify-version {
+    background: var(--wanotify-secondary);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Dirty state indicator */
+.wanotify-dirty-state {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--wanotify-warning);
+    background: rgba(255, 152, 0, 0.1);
+    margin-left: 10px;
+    display: none; /* Sembunyikan secara default */
+}
+
+.wanotify-dirty-state.active {
+    display: inline-block; /* Tampilkan saat aktif */
+}

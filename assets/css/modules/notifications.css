@@ -1,0 +1,50 @@
+/**
+ * WhatsApp Notify - Notifications Styles
+ * Styling untuk notifikasi toast dan alerts
+ */
+.wanotify-notifications {
+    padding: 15px 0;
+}
+
+.wanotify-notification {
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: var(--wanotify-radius);
+    display: flex;
+    align-items: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.wanotify-notification.wanotify-success {
+    background-color: rgba(76, 175, 80, 0.1);
+    border-left: 4px solid var(--wanotify-success);
+}
+
+.wanotify-notification.wanotify-error {
+    background-color: rgba(244, 67, 54, 0.1);
+    border-left: 4px solid var(--wanotify-error);
+}
+
+.wanotify-notification-icon {
+    margin-right: 10px;
+}
+
+.wanotify-notification-message {
+    flex-grow: 1;
+}
+
+.wanotify-notification-close {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+/* Status indikator untuk fitur yang dinonaktifkan */
+.wanotify-feature-blocked-info {
+    color: var(--wanotify-error);
+    font-size: 12px;
+    margin-top: 5px;
+    margin-left: 5px;
+    font-style: italic;
+    display: inline-block;
+}

@@ -1,0 +1,75 @@
+/**
+ * WhatsApp Notify - Form List Styles
+ * Styling untuk tabel daftar formulir
+ */
+.wanotify-form-list-table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.wanotify-form-list-table th,
+.wanotify-form-list-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--wanotify-border);
+}
+
+.wanotify-form-list-table th {
+    font-weight: 600;
+    color: #23282d;
+    background: #f8f9fa;
+}
+
+.wanotify-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.wanotify-status-active {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--wanotify-success);
+}
+
+.wanotify-status-inactive {
+    background-color: rgba(158, 158, 158, 0.1);
+    color: #757575;
+}
+
+/* Responsive table */
+@media screen and (max-width: 782px) {
+    .wanotify-form-list-table thead {
+        display: none;
+    }
+    
+    .wanotify-form-list-table tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid var(--wanotify-border);
+        border-radius: 4px;
+    }
+    
+    .wanotify-form-list-table td {
+        display: block;
+        text-align: right;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 35%;
+    }
+    
+    .wanotify-form-list-table td:last-child {
+        border-bottom: none;
+    }
+    
+    .wanotify-form-list-table td:before {
+        content: attr(data-title);
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        font-weight: 600;
+        text-align: left;
+    }
+}

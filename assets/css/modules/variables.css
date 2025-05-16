@@ -1,0 +1,17 @@
+/**
+ * WhatsApp Notify - Variables
+ * Definisi variabel CSS yang digunakan di seluruh plugin
+ */
+:root {
+    --wanotify-primary: #25D366; /* WhatsApp green color */
+    --wanotify-primary-dark: #128C7E;
+    --wanotify-secondary: #34B7F1;
+    --wanotify-text: #333333;
+    --wanotify-light-bg: #F8F9FA;
+    --wanotify-border: #E1E1E1;
+    --wanotify-success: #4CAF50;
+    --wanotify-error: #F44336;
+    --wanotify-warning: #FF9800;
+    --wanotify-radius: 8px;
+    --wanotify-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}

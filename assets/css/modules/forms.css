@@ -1,0 +1,227 @@
+/**
+ * WhatsApp Notify - Forms Styles
+ * Styling untuk form elements dan layout
+ */
+.wanotify-form {
+    max-width: 800px;
+}
+
+.wanotify-form-row {
+    margin-bottom: 25px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.wanotify-form-row > label {
+    flex: 0 0 200px;
+    font-weight: 600;
+    padding-top: 8px;
+}
+
+.wanotify-form-input {
+    flex: 1;
+    min-width: 300px;
+}
+
+.wanotify-help-text {
+    font-size: 13px;
+    color: #666;
+    margin: 5px 0 0;
+}
+
+/* Inputs */
+.wanotify-input,
+.wanotify-select,
+.wanotify-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--wanotify-border);
+    border-radius: 4px;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.wanotify-input:focus,
+.wanotify-select:focus,
+.wanotify-textarea:focus {
+    border-color: var(--wanotify-primary);
+    box-shadow: 0 0 0 1px var(--wanotify-primary);
+    outline: none;
+}
+
+/* Checkbox styling */
+.wanotify-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.wanotify-checkbox input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.wanotify-checkbox-group {
+    margin-bottom: 15px;
+}
+
+.wanotify-field-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--wanotify-border);
+    border-radius: var(--wanotify-radius);
+    padding: 10px;
+    background: var(--wanotify-light-bg);
+}
+
+/* Form action buttons */
+.wanotify-form-actions {
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid var(--wanotify-border);
+}
+
+/* Field validation states */
+.wanotify-field-error {
+    color: var(--wanotify-error);
+    font-size: 12px;
+    margin-top: 5px;
+    font-style: italic;
+    display: block;
+}
+
+.wanotify-field-warning {
+    color: var(--wanotify-warning);
+    font-size: 12px;
+    margin-top: 5px;
+    font-style: italic;
+    display: block;
+}
+
+/* Form input states */
+.wanotify-form-input.has-error input,
+.wanotify-form-input.has-error textarea,
+.wanotify-form-input.has-error select {
+    border-color: var(--wanotify-error) !important;
+    box-shadow: 0 0 2px rgba(220, 50, 50, 0.8);
+}
+
+.wanotify-form-input.has-warning input,
+.wanotify-form-input.has-warning textarea,
+.wanotify-form-input.has-warning select {
+    border-color: var(--wanotify-warning) !important;
+    box-shadow: 0 0 2px rgba(255, 186, 0, 0.8);
+}
+
+/* Radio Group Styles */
+.wanotify-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.wanotify-radio {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #f9f9f9;
+}
+
+.wanotify-radio:has(input:checked) {
+    border-color: #2271b1;
+    background: #f0f6fc;
+    box-shadow: 0 0 0 1px #2271b1;
+}
+
+.wanotify-radio > input[type="radio"] {
+    margin-right: 8px;
+}
+
+.wanotify-radio > span {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+/* Style untuk opsi radio yang dinonaktifkan */
+.wanotify-radio-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    position: relative;
+}
+
+.wanotify-radio-disabled input[type="radio"] {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Style untuk icon tooltip */
+.wanotify-option-tooltip {
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
+    position: relative;
+    cursor: help;
+}
+
+.wanotify-option-tooltip .dashicons {
+    color: #777;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Tooltip hover style */
+.wanotify-option-tooltip:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 12px;
+    background: #333;
+    color: white;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 12px;
+    z-index: 1000;
+}
+
+.wanotify-option-tooltip:hover::before {
+    content: "";
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.recipient-mode-settings {
+    margin-top: 10px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 4px;
+}
+
+/* Gunakan selector yang lebih spesifik untuk error styling */
+.recipient-mode-settings.has-error input,
+.recipient-mode-settings.has-error select {
+    border-color: #dc3232;
+}
+
+/* Pastikan hanya container settings yang aktif yang mendapat styling error */
+.recipient-manual-settings.has-error,
+.recipient-dynamic-settings.has-error {
+    padding: 5px;
+    background-color: rgba(220, 50, 50, 0.05);
+    border-left: 3px solid #dc3232;
+    margin-top: 5px;
+}
+
+/* Hindari mewarnai radio button saat error */
+.wanotify-radio input[type="radio"] {
+    border-color: #7e8993 !important; /* Warna default */
+}

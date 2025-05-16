@@ -1,0 +1,27 @@
+/**
+ * WhatsApp Notify - Tabs Styles
+ * Styling untuk tab navigation
+ */
+.wanotify-tabs .nav-tab-wrapper {
+    border-bottom: 1px solid var(--wanotify-border);
+    margin: 0;
+    padding-left: 20px;
+}
+
+.wanotify-tabs .nav-tab {
+    margin-left: 0;
+    margin-right: 5px;
+    padding: 12px 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+}
+
+.wanotify-tabs .nav-tab-active, 
+.wanotify-tabs .nav-tab:hover {
+    border-bottom: 3px solid var(--wanotify-primary);
+    background: transparent;
+    color: var(--wanotify-primary);
+}

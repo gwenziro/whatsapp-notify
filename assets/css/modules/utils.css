@@ -1,0 +1,62 @@
+/**
+ * WhatsApp Notify - Utility Classes
+ * Helper classes dan overrides
+ */
+/* Status colors */
+.wanotify-text-success {
+    color: var(--wanotify-success);
+}
+
+.wanotify-text-error {
+    color: var(--wanotify-error);
+}
+
+.wanotify-text-warning {
+    color: var(--wanotify-warning);
+}
+
+/* Layout utilities */
+.wanotify-flex {
+    display: flex;
+}
+
+.wanotify-flex-column {
+    flex-direction: column;
+}
+
+.wanotify-align-center {
+    align-items: center;
+}
+
+.wanotify-justify-between {
+    justify-content: space-between;
+}
+
+.wanotify-mt-1 {
+    margin-top: 0.5rem;
+}
+
+.wanotify-mt-2 {
+    margin-top: 1rem;
+}
+
+.wanotify-mb-1 {
+    margin-bottom: 0.5rem;
+}
+
+.wanotify-mb-2 {
+    margin-bottom: 1rem;
+}
+
+/* Typography utilities */
+.wanotify-text-bold {
+    font-weight: 600;
+}
+
+.wanotify-text-center {
+    text-align: center;
+}
+
+.wanotify-text-small {
+    font-size: 0.875rem;
+}

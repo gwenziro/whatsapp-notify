@@ -1,0 +1,118 @@
+/**
+ * WhatsApp Notify - Toggles Styles
+ * Styling untuk toggle switches dan form controls
+ */
+/* Toggle switch */
+.wanotify-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.wanotify-switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.wanotify-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .3s;
+    border-radius: 34px;
+}
+
+.wanotify-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .wanotify-slider {
+    background-color: var(--wanotify-primary);
+}
+
+input:focus + .wanotify-slider {
+    box-shadow: 0 0 1px var(--wanotify-primary);
+}
+
+input:checked + .wanotify-slider:before {
+    transform: translateX(24px);
+}
+
+/* Toggle switch dalam tabel formulir */
+.wanotify-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.wanotify-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.wanotify-toggle-slider {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 20px;
+    margin-right: 8px;
+    transition: .3s;
+}
+
+.wanotify-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .3s;
+}
+
+input:checked + .wanotify-toggle-slider {
+    background-color: var(--wanotify-primary);
+}
+
+input:focus + .wanotify-toggle-slider {
+    box-shadow: 0 0 1px var(--wanotify-primary);
+}
+
+input:checked + .wanotify-toggle-slider:before {
+    transform: translateX(16px);
+}
+
+.wanotify-toggle-status {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Efek loading saat toggle sedang di proses */
+.wanotify-toggle.wanotify-loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.wanotify-toggle.wanotify-loading .wanotify-toggle-slider:before {
+    animation: wanotify-toggle-pulse 1s infinite;
+}

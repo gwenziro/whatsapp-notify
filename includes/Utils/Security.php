@@ -117,6 +117,7 @@ class Security
      */
     public static function sanitize_template_html($html)
     {
-        return wp_kses_post($html);
+        // Gunakan stripslashes_deep untuk menghilangkan escape backslash otomatis
+        return stripslashes_deep($html);
     }
 }

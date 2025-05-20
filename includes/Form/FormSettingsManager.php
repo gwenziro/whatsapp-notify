@@ -49,7 +49,7 @@ class FormSettingsManager
      */
     public static function get_form_settings($form_id)
     {
-        return get_option(Constants::FORM_SETTINGS_PREFIX . $form_id, [
+        $settings = get_option(Constants::FORM_SETTINGS_PREFIX . $form_id, [
             'enabled' => false,
             'recipient_mode' => Constants::RECIPIENT_MODE_DEFAULT,
             'recipient' => '',
@@ -57,6 +57,13 @@ class FormSettingsManager
             'message_template' => '',
             'included_fields' => ['*']
         ]);
+        
+        // Pastikan template pesan tidak memiliki escape karakter yang tidak diinginkan
+        if (isset($settings['message_template'])) {
+            $settings['message_template'] = stripslashes($settings['message_template']);
+        }
+        
+        return $settings;
     }
 
     /**
@@ -90,8 +97,9 @@ class FormSettingsManager
         $sanitized_settings['recipient_field'] = isset($settings['recipient_field']) ? 
             sanitize_text_field($settings['recipient_field']) : '';
 
+        // PERBAIKAN: Simpan template pesan tanpa sanitasi agresif
         $sanitized_settings['message_template'] = isset($settings['message_template']) ? 
-            wp_kses_post($settings['message_template']) : '';
+            stripslashes($settings['message_template']) : ''; // Gunakan stripslashes untuk menghilangkan escape otomatis
 
         $sanitized_settings['included_fields'] = isset($settings['included_fields']) && is_array($settings['included_fields']) ? 
             array_map('sanitize_text_field', $settings['included_fields']) : ['*'];

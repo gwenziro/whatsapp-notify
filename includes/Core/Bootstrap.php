@@ -40,12 +40,34 @@ class Bootstrap
 
         // Inisialisasi plugin
         $plugin = Plugin::get_instance();
+        
+        // Tambahkan filter untuk menangani slashes otomatis WordPress
+        add_filter('wp_unslash_post_data', [__CLASS__, 'preserve_template_slashes'], 10, 1);
 
         // Inisialisasi AJAX handlers
         self::init_ajax_handlers($plugin);
 
         // Load translations
         self::load_textdomain();
+    }
+
+    /**
+     * Preserve slashes in template fields
+     * 
+     * @param array $data Post data
+     * @return array Modified post data
+     */
+    public static function preserve_template_slashes($data)
+    {
+        if (isset($data['POST']['message_template'])) {
+            $data['POST']['message_template'] = stripslashes($data['POST']['message_template']);
+        }
+        
+        if (isset($data['POST']['default_template'])) {
+            $data['POST']['default_template'] = stripslashes($data['POST']['default_template']);
+        }
+        
+        return $data;
     }
 
     /**

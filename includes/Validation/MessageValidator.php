@@ -29,11 +29,14 @@ class MessageValidator
      */
     public static function validate($template)
     {
+        // Simpan template asli tanpa mengubah karakter khusus
+        $original_template = $template;
+        
         $template = trim($template);
         $result = [
             'is_valid' => false,
             'message' => '',
-            'formatted' => $template,
+            'formatted' => $original_template, // Gunakan template asli
             'is_warning' => false
         ];
 

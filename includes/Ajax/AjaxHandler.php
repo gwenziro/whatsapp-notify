@@ -103,8 +103,8 @@ abstract class AjaxHandler
                 switch ($key) {
                     case 'message_template':
                     case 'default_template':
-                        // Izinkan HTML tertentu dalam template pesan
-                        $sanitized[$key] = wp_kses_post($value);
+                        // PERBAIKAN: Pertahankan karakter khusus dalam template pesan
+                        $sanitized[$key] = stripslashes($value); // Hilangkan escape yang otomatis ditambahkan WordPress
                         break;
 
                     case 'api_url':

@@ -69,4 +69,21 @@ class Formatter
     {
         return date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $timestamp);
     }
+
+    /**
+     * Sanitasi template pesan dengan menjaga karakter khusus
+     *
+     * @param string $template Template pesan yang akan disanitasi
+     * @return string Template yang sudah disanitasi tanpa mengubah karakter khusus
+     */
+    public static function sanitize_template($template)
+    {
+        // Hilangkan escape backslash yang otomatis ditambahkan WordPress
+        $template = stripslashes($template);
+        
+        // Hapus tag script untuk keamanan
+        $template = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $template);
+        
+        return $template;
+    }
 }

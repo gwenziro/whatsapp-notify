@@ -166,9 +166,9 @@ class FormHandler
      */
     private function build_message($form_settings, $form_data, $form)
     {
-        // Ambil template pesan
+        // Ambil template pesan - pastikan karakter khusus dipertahankan
         $template = !empty($form_settings['message_template']) ?
-            $form_settings['message_template'] :
+            stripslashes($form_settings['message_template']) :
             $this->get_default_template();
 
         // Ganti placeholder default
@@ -243,7 +243,7 @@ class FormHandler
         $global_settings = get_option(Constants::SETTINGS_OPTION_KEY, []);
 
         return !empty($global_settings['default_template']) ?
-            $global_settings['default_template'] :
+            stripslashes($global_settings['default_template']) :
             Constants::DEFAULT_TEMPLATE;
     }
 

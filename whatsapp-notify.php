@@ -4,9 +4,9 @@
  * Plugin Name: WhatsApp Notify
  * Plugin URI: https://github.com/gwenziro/whatsapp-notify
  * Description: Kirim notifikasi WhatsApp otomatis ketika formulir Fluent Forms disubmit.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Exernia
- * Author URI: https://jajanweb.id
+ * Author URI: https://jajanweb.com
  * Text Domain: whatsapp-notify
  * Domain Path: /languages
  * License: GPL-2.0+
@@ -38,7 +38,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('WANOTIFY_VERSION', '1.0.0');
+define('WANOTIFY_VERSION', '1.0.1');
 define('WANOTIFY_PLUGIN_FILE', __FILE__);
 define('WANOTIFY_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WANOTIFY_PLUGIN_URL', plugin_dir_url(__FILE__));

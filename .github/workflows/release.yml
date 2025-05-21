@@ -17,7 +17,7 @@ jobs:
           node-version: '16'
           
       - name: Install dependencies
-        run: npm ci
+        run: npm install # Menggunakan npm install sebagai pengganti npm ci
         
       - name: Build ZIP
         run: npm run zip

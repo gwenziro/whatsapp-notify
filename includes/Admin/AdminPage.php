@@ -10,9 +10,8 @@
 namespace WANotify\Admin;
 
 use WANotify\Api\ApiClient;
-use WANotify\Core\Constants;
 use WANotify\Logging\Logger;
-use WANotify\Validation\Validator;
+use WANotify\Utils\AssetLoader;
 
 // Cegah akses langsung
 if (!defined('ABSPATH')) {
@@ -76,6 +75,13 @@ class AdminPage
     protected $help_page;
 
     /**
+     * Instance AssetLoader
+     *
+     * @var AssetLoader
+     */
+    protected $asset_loader;
+
+    /**
      * Constructor
      *
      * @param ApiClient $api    API Client
@@ -91,12 +97,13 @@ class AdminPage
         $this->form_settings = new FormSettings($api, $logger);
         $this->log_viewer = new LogViewer($logger);
         $this->help_page = new HelpPage();
+        
+        // Inisialisasi asset loader
+        $this->asset_loader = new AssetLoader(WANOTIFY_PLUGIN_URL, WANOTIFY_VERSION);
+        $this->asset_loader->register();
 
         // Tambahkan menu admin
         add_action('admin_menu', array($this, 'add_admin_menu'));
-
-        // Daftarkan assets
-        add_action('admin_enqueue_scripts', array($this, 'enqueue_assets'));
     }
 
     /**
@@ -113,105 +120,6 @@ class AdminPage
             'dashicons-whatsapp',
             30
         );
-    }
-
-    /**
-     * Daftarkan asset CSS & JS
-     *
-     * @param string $hook Current admin page
-     */
-    public function enqueue_assets($hook)
-    {
-        // Hanya daftarkan di halaman plugin ini
-        if (strpos($hook, 'whatsapp-notify') === false) {
-            return;
-        }
-
-        // Daftarkan CSS
-        wp_enqueue_style(
-            'wanotify-admin-style',
-            WANOTIFY_PLUGIN_URL . 'assets/css/admin-style.css',
-            array(),
-            WANOTIFY_VERSION
-        );
-
-        // Daftarkan modul JS dasar
-        $base_modules = array(
-            'validator',
-            'notifications',
-            'form-utils',
-            'ui-state'
-        );
-
-        // Daftarkan modul JS form-settings yang baru
-        $form_modules = array(
-            'form-validation',
-            'test-handlers',
-            'recipient-manager',
-            'form-data-handler',
-            'form-ui-manager',
-            'form-settings'
-        );
-
-        // Daftarkan modul lainnya
-        $other_modules = array(
-            'form-toggle',
-            'config-checker'
-        );
-
-        // Gabungkan semua modul
-        $js_modules = array_merge($base_modules, $form_modules, $other_modules);
-
-        // Daftarkan setiap modul dengan dependensi jQuery
-        foreach ($js_modules as $module) {
-            wp_enqueue_script(
-                "wanotify-{$module}",
-                WANOTIFY_PLUGIN_URL . "assets/js/modules/{$module}.js",
-                array('jquery'),
-                WANOTIFY_VERSION,
-                true
-            );
-        }
-
-        // Daftarkan script utama dengan dependensi pada modul
-        $dependencies = array_merge(['jquery'], array_map(function($module) {
-            return "wanotify-{$module}";
-        }, $js_modules));
-
-        wp_enqueue_script(
-            'wanotify-admin-script',
-            WANOTIFY_PLUGIN_URL . 'assets/js/admin-script.js',
-            $dependencies,
-            WANOTIFY_VERSION,
-            true
-        );
-
-        // Berikan data untuk JS
-        wp_localize_script('wanotify-admin-script', 'wanotify', array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('wanotify_admin_nonce'),
-            'settings_url' => admin_url('admin.php?page=whatsapp-notify'),
-            'i18n' => array(
-                'success' => __('Berhasil!', 'whatsapp-notify'),
-                'error' => __('Error!', 'whatsapp-notify'),
-                'saving' => __('Menyimpan...', 'whatsapp-notify'),
-                'testing' => __('Menguji koneksi...', 'whatsapp-notify'),
-                'confirm_clear_logs' => __('Apakah Anda yakin ingin menghapus semua log?', 'whatsapp-notify'),
-                'activating' => __('Mengaktifkan...', 'whatsapp-notify'),
-                'deactivating' => __('Menonaktifkan...', 'whatsapp-notify'),
-                'phone_field_required' => __('Opsi ini tidak tersedia karena tidak ada field telepon di formulir', 'whatsapp-notify'),
-                'settings_auto_adjusted' => __('Pengaturan penerima notifikasi disesuaikan otomatis karena field telepon tidak tersedia lagi', 'whatsapp-notify'),
-            )
-        ));
-    }
-
-    /**
-     * Register Ajax handlers
-     */
-    protected function register_ajax_handlers()
-    {
-        // Hapus register ajax handlers di sini karena sudah di-handle oleh Bootstrap.php
-        // untuk mencegah duplikasi dan potensi konflik
     }
 
     /**
@@ -313,5 +221,15 @@ class AdminPage
     public function get_help_page()
     {
         return $this->help_page;
+    }
+
+    /**
+     * Mendapatkan komponen AssetLoader
+     *
+     * @return AssetLoader
+     */
+    public function get_asset_loader()
+    {
+        return $this->asset_loader;
     }
 }

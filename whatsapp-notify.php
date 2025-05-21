@@ -6,7 +6,7 @@
  * Description: Kirim notifikasi WhatsApp otomatis ketika formulir Fluent Forms disubmit.
  * Version: 1.0.0
  * Author: Exernia
- * Author URI: https://jajanweb.com
+ * Author URI: https://jajanweb.id
  * Text Domain: whatsapp-notify
  * Domain Path: /languages
  * License: GPL-2.0+

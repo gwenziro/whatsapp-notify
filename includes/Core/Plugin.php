@@ -15,6 +15,7 @@ use WANotify\Form\FormHandler;
 use WANotify\Logging\Logger;
 use WANotify\Notification\NotificationManager;
 use WANotify\Notification\WhatsAppNotification;
+use WANotify\Utils\AssetLoader;
 
 // Cegah akses langsung
 if (!defined('ABSPATH')) {
@@ -69,6 +70,13 @@ class Plugin
      * @var FormHandler
      */
     private $form_handler;
+    
+    /**
+     * Komponen Asset Loader
+     *
+     * @var AssetLoader
+     */
+    private $asset_loader;
 
     /**
      * Mendapatkan instance singleton
@@ -100,6 +108,9 @@ class Plugin
         // Daftarkan handler WhatsApp untuk notification manager
         $whatsapp_notification = new WhatsAppNotification($this->api, $this->logger);
         $this->notification_manager->register_handler('whatsapp', $whatsapp_notification);
+        
+        // Inisialisasi asset loader
+        $this->asset_loader = new AssetLoader(WANOTIFY_PLUGIN_URL, WANOTIFY_VERSION);
 
         // Inisialisasi admin
         $this->admin = new AdminPage($this->api, $this->logger);
@@ -161,5 +172,15 @@ class Plugin
     public function get_form_handler()
     {
         return $this->form_handler;
+    }
+    
+    /**
+     * Mendapatkan komponen asset loader
+     *
+     * @return AssetLoader
+     */
+    public function get_asset_loader()
+    {
+        return $this->asset_loader;
     }
 }

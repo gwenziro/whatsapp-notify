@@ -3,7 +3,7 @@
  * Definisi variabel CSS yang digunakan di seluruh plugin
  */
 :root {
-    --wanotify-primary: #25D366; /* WhatsApp green color */
+    --wanotify-primary: #25D366;
     --wanotify-primary-dark: #128C7E;
     --wanotify-secondary: #34B7F1;
     --wanotify-text: #333333;

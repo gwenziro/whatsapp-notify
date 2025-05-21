@@ -1,1 +1,49 @@
-assets/js/admin-script-lama.js
+# Dependencies
+node_modules/
+vendor/
+
+# Build output
+dist/
+build/
+zip/
+
+# Development files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Documentation files (optional if you want to exclude from Git)
+docs/development/
+
+# Cache
+.cache/
+
+# Legacy/backup files
+*-lama.js
+*-backup.*
+*.bak
+
+# Specific files to ignore
+package-lock.json
+composer.lock
+gulpfile.js

@@ -1,0 +1,24 @@
+{
+  "name": "whatsapp-notify",
+  "version": "1.0.0",
+  "description": "WhatsApp notification plugin for WordPress & FluentForms",
+  "scripts": {
+    "zip": "node scripts/create-zip.js"
+  },
+  "devDependencies": {
+    "archiver": "^5.3.1"
+  },
+  "main": "gulpfile.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gwenziro/whatsapp-notify.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/gwenziro/whatsapp-notify/issues"
+  },
+  "homepage": "https://github.com/gwenziro/whatsapp-notify#readme"
+}

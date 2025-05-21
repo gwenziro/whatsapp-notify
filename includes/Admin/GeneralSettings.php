@@ -316,7 +316,7 @@ class GeneralSettings
                 'incomplete_config',
                 'Pengaturan dasar belum lengkap. Silakan isi: ' . implode(', ', $missing_fields),
                 [
-                    'redirect_url' => admin_url('admin.php?page=whatsapp-notify&highlight=' . $first_missing),
+                    'redirect_url' => admin_url("admin.php?page=whatsapp-notify&highlight=$first_missing"),
                     'missing_fields' => $missing_fields
                 ]
             );

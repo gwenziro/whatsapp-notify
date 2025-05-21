@@ -6,7 +6,8 @@ Kirim notifikasi WhatsApp otomatis ketika formulir Fluent Forms disubmit. Integr
 
 WhatsApp Notify menyediakan integrasi antara Fluent Forms dengan layanan API WhatsApp. Plugin ini memungkinkan pengirimian notifikasi WhatsApp secara otomatis ketika ada pengisian formulir baru, dengan opsi konfigurasi yang fleksibel per formulir.
 
-### Fitur:
+### Fitur
+
 - Kirim notifikasi WhatsApp otomatis saat formulir diisi
 - Konfigurasi terpisah untuk setiap formulir
 - Template pesan yang dapat disesuaikan
@@ -30,14 +31,16 @@ WhatsApp Notify menyediakan integrasi antara Fluent Forms dengan layanan API Wha
 
 ## Konfigurasi
 
-### Pengaturan Umum:
+### Pengaturan Umum
+
 1. Buka menu 'WhatsApp Notify' di dashboard WordPress
 2. Masukkan URL API WhatsApp
 3. Masukkan token autentikasi
 4. Atur nomor WhatsApp default untuk penerima notifikasi
 5. Sesuaikan template pesan default (opsional)
 
-### Pengaturan Formulir:
+### Pengaturan Formulir
+
 1. Pilih formulir dari daftar
 2. Aktifkan notifikasi untuk formulir tersebut
 3. Pilih mode penerima (default, kustom, atau dinamis)
@@ -52,6 +55,7 @@ Plugin ini dilisensikan di bawah GPL v2 atau yang lebih baru.
 ## Changelog
 
 ### 1.0.0
+
 - Rilis pertama plugin
 - Integrasi dengan Fluent Forms
 - Konfigurasi per formulir
@@ -62,5 +66,6 @@ Plugin ini dilisensikan di bawah GPL v2 atau yang lebih baru.
 ## Kontak dan Dukungan
 
 Untuk pertanyaan, dukungan, dan umpan balik:
-- Email: your.email@example.com
-- GitHub: https://github.com/yourusername/whatsapp-notify
+
+- Email: <exernia@gmail.com>
+- GitHub: <https://github.com/gwenziro/whatsapp-notify>

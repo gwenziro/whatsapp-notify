@@ -90,17 +90,12 @@
             
             if (!WANotify.Validator || !WANotify.FormUtils) return;
             
-            // Validate API URL
-            $("#api_url").on("blur", function() {
-                WANotify.FormUtils.validateField($(this), WANotify.Validator.validateApiUrl);
-            });
-            
-            // Validate Access Token
+            // Validasi Access Token
             $("#access_token").on("blur", function() {
                 WANotify.FormUtils.validateField($(this), WANotify.Validator.validateAccessToken);
             });
             
-            // Validate Default Recipient
+            // Validasi Default Recipient
             $("#default_recipient").on("blur", function() {
                 const result = WANotify.FormUtils.validateField(
                     $(this),
@@ -119,7 +114,7 @@
                 }
             });
             
-            // Validate Message Template
+            // Validasi Message Template
             $("#default_template").on("blur", function() {
                 const result = WANotify.FormUtils.validateField(
                     $(this),
@@ -138,28 +133,21 @@
                 // Validate all fields
                 let isValid = true;
                 
-                // Validate URL API
-                const apiUrlResult = WANotify.FormUtils.validateField(
-                    $("#api_url"),
-                    WANotify.Validator.validateApiUrl
-                );
-                if (!apiUrlResult.isValid) isValid = false;
-                
-                // Validate Token
+                // Validasi Token
                 const tokenResult = WANotify.FormUtils.validateField(
                     $("#access_token"),
                     WANotify.Validator.validateAccessToken
                 );
                 if (!tokenResult.isValid) isValid = false;
                 
-                // Validate Default Recipient
+                // Validasi Default Recipient
                 const recipientResult = WANotify.FormUtils.validateField(
                     $("#default_recipient"),
                     WANotify.Validator.validateWhatsAppNumber
                 );
                 if (!recipientResult.isValid) isValid = false;
                 
-                // Validate Template
+                // Validasi Template
                 const templateResult = WANotify.FormUtils.validateField(
                     $("#default_template"),
                     WANotify.Validator.validateMessageTemplate

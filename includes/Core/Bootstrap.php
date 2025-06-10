@@ -131,15 +131,25 @@ class Bootstrap
             wp_mkdir_p($log_dir);
             // Buat file .htaccess untuk mencegah akses langsung ke log
             file_put_contents($log_dir . '/.htaccess', 'deny from all');
+            
+            // PERUBAHAN: Atur permission pada direktori log
+            @chmod($log_dir, 0755);
+        }
+        
+        // PERUBAHAN: Buat file log kosong jika belum ada
+        $log_file = $log_dir . '/whatsapp-notify.log';
+        if (!file_exists($log_file)) {
+            touch($log_file);
+            @chmod($log_file, 0644);
         }
 
         // Tambahkan opsi default jika belum ada
         if (!get_option(Constants::SETTINGS_OPTION_KEY)) {
             add_option(Constants::SETTINGS_OPTION_KEY, [
-                'api_url' => '',
                 'access_token' => '',
                 'default_recipient' => '',
-                'default_template' => Constants::DEFAULT_TEMPLATE
+                'default_template' => Constants::DEFAULT_TEMPLATE,
+                'enable_logging' => true // PERUBAHAN: Set logging ke true secara default
             ]);
         }
 

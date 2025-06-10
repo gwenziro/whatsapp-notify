@@ -72,7 +72,6 @@
             const data = {
                 action: "wanotify_save_settings",
                 nonce: wanotify.nonce,
-                api_url: $form.find("#api_url").val(),
                 access_token: $form.find("#access_token").val(),
                 default_recipient: formattedRecipient,
                 default_template: $form.find("#default_template").val(),

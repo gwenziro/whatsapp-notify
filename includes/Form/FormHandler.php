@@ -74,17 +74,33 @@ class FormHandler
     
             // Cek apakah notifikasi diaktifkan untuk form ini
             if (empty($form_settings) || !$form_settings['enabled']) {
-                $this->logger->info("Notifikasi tidak diaktifkan untuk form #{$form_id}");
+                $this->logger->info("Notifikasi tidak diaktifkan untuk formulir #{$form_id}, submission ID #{$entry_id}");
                 return;
             }
+    
+            // PERUBAHAN: Tambahkan log untuk memulai proses pengiriman
+            $this->logger->info("Memproses submission formulir untuk notifikasi WhatsApp", [
+                'form_id' => $form_id,
+                'entry_id' => $entry_id,
+                'form_title' => $form->title
+            ]);
     
             // Tentukan penerima menggunakan fungsi helper
             $recipient = $this->get_recipient($form_settings, $form_data);
     
             if (empty($recipient)) {
-                $this->logger->error("Nomor tujuan tidak ditemukan untuk form #{$form_id}");
+                $this->logger->error("Nomor tujuan tidak ditemukan untuk formulir #{$form_id}", [
+                    'entry_id' => $entry_id,
+                    'recipient_mode' => $form_settings['recipient_mode']
+                ]);
                 return;
             }
+    
+            // PERUBAHAN: Log nomor tujuan yang ditemukan
+            $this->logger->info("Nomor tujuan ditemukan: {$recipient}", [
+                'form_id' => $form_id,
+                'recipient_mode' => $form_settings['recipient_mode']
+            ]);
     
             // Bangun pesan dari template
             $message = $this->build_message($form_settings, $form_data, $form);
@@ -95,6 +111,21 @@ class FormHandler
                 'entry_id' => $entry_id,
                 'form_data' => $form_data
             ]);
+    
+            // PERUBAHAN: Log hasil pengiriman dengan lebih detail
+            if ($result['success']) {
+                $this->logger->info("Notifikasi WhatsApp berhasil dikirim untuk formulir #{$form_id}", [
+                    'entry_id' => $entry_id,
+                    'recipient' => $recipient,
+                    'form_title' => $form->title
+                ]);
+            } else {
+                $this->logger->error("Gagal mengirim notifikasi WhatsApp untuk formulir #{$form_id}", [
+                    'entry_id' => $entry_id,
+                    'recipient' => $recipient,
+                    'error' => $result['message']
+                ]);
+            }
     
             // Simpan informasi pengiriman ke meta entry
             $this->save_notification_log($entry_id, $result);

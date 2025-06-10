@@ -38,6 +38,13 @@ class NotificationManager
     protected $handlers = [];
 
     /**
+     * Pelacak handler yang sudah terdaftar (statis untuk bertahan antar request)
+     *
+     * @var array
+     */
+    private static $registered_handlers = [];
+
+    /**
      * Constructor
      *
      * @param Logger $logger Logger instance
@@ -52,12 +59,19 @@ class NotificationManager
      *
      * @param string $type Type notifikasi
      * @param object $handler Handler notifikasi
+     * @param bool $log_registration Apakah akan mencatat registrasi ke log
      * @return void
      */
-    public function register_handler($type, $handler)
+    public function register_handler($type, $handler, $log_registration = true)
     {
         $this->handlers[$type] = $handler;
-        $this->logger->info("Notification handler registered for type: $type");
+        
+        // Hanya log jika tipe handler belum pernah terdaftar dalam sesi ini
+        // dan log_registration diset ke true
+        if ($log_registration && !isset(self::$registered_handlers[$type])) {
+            $this->logger->info("Notification handler registered for type: $type", [], 'initialization');
+            self::$registered_handlers[$type] = true;
+        }
     }
 
     /**

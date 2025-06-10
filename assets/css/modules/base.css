@@ -3,67 +3,68 @@
  * Style dasar untuk elemen umum
  */
 .wanotify-admin {
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-    color: var(--wanotify-text);
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  color: var(--wanotify-text);
 }
 
 .wanotify-container {
-    background: #fff;
-    border-radius: var(--wanotify-radius);
-    box-shadow: var(--wanotify-shadow);
-    margin: 20px 0;
+  background: #fff;
+  border-radius: var(--wanotify-radius);
+  box-shadow: var(--wanotify-shadow);
+  margin: 16px 32px 32px 16px;
 }
 
 .wanotify-content {
-    padding: 30px;
+  padding: 32px;
 }
 
 .wanotify-settings-section {
-    margin-bottom: 30px;
+  margin-bottom: 32px;
 }
 
 .wanotify-section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .wanotify-section-header h2 {
-    margin: 0;
-    padding: 0;
-    font-size: 18px;
-    font-weight: 600;
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 /* Pastikan semua konten log rata kiri */
 .wanotify-log-entry * {
-    text-align: left !important;
-    text-indent: 0 !important;
-    padding-left: 0 !important;
-    margin-left: 0 !important;
+  text-align: left !important;
+  text-indent: 0 !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
 }
 
 /* Banner untuk konfigurasi tidak lengkap */
 .wanotify-config-notice {
-    background-color: #fff8e5;
-    border-left: 4px solid #ffba00;
-    padding: 12px 15px;
-    margin: 15px 0;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  background-color: #fff8e5;
+  border-left: 4px solid #ffba00;
+  padding: 12px 15px;
+  margin: 15px 0;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .wanotify-config-notice a.button {
-    margin-left: 10px;
-    vertical-align: middle;
+  margin-left: 10px;
+  vertical-align: middle;
 }
 
 /* Footer */
 .wanotify-footer {
-    padding: 15px 0;
-    text-align: center;
-    font-size: 13px;
-    color: #666;
+  padding: 15px 0;
+  text-align: center;
+  font-size: 13px;
+  color: #666;
 }

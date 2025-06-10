@@ -29,11 +29,14 @@ class Constants
     const SETTINGS_OPTION_KEY = 'wanotify_settings';
     const FORM_SETTINGS_PREFIX = 'wanotify_form_settings_';
     const LOG_OPTION_KEY = 'wanotify_logs';
+    
+    // URL API WhatsApp - nilai tetap
+    const BASE_API_URL = 'https://bot.ihyaulquran.id';
 
     // Endpoint API WhatsApp
-    const ENDPOINT_PERSONAL = 'kirim-pesan-personal';
-    const ENDPOINT_GROUP = 'kirim-pesan-grup';
-    const ENDPOINT_GROUP_LIST = 'daftar-grup';
+    const ENDPOINT_PERSONAL = 'api/send/personal';
+    const ENDPOINT_GROUP = 'api/send/group';
+    const ENDPOINT_GROUP_LIST = 'api/groups';
 
     // Mode penerima
     const RECIPIENT_MODE_DEFAULT = 'default';

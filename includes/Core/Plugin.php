@@ -37,6 +37,13 @@ class Plugin
     private static $instance = null;
 
     /**
+     * Flag untuk melacak jika inisialisasi sudah dilog
+     *
+     * @var bool
+     */
+    private static $initialization_logged = false;
+
+    /**
      * Komponen logger
      *
      * @var Logger
@@ -107,7 +114,7 @@ class Plugin
 
         // Daftarkan handler WhatsApp untuk notification manager
         $whatsapp_notification = new WhatsAppNotification($this->api, $this->logger);
-        $this->notification_manager->register_handler('whatsapp', $whatsapp_notification);
+        $this->notification_manager->register_handler('whatsapp', $whatsapp_notification, !self::$initialization_logged);
         
         // Inisialisasi asset loader
         $this->asset_loader = new AssetLoader(WANOTIFY_PLUGIN_URL, WANOTIFY_VERSION);
@@ -118,10 +125,15 @@ class Plugin
         // Inisialisasi form handler dengan notification manager
         $this->form_handler = new FormHandler($this->notification_manager, $this->logger);
 
-        // Log inisialisasi plugin
-        $this->logger->info('Plugin initialized', [
-            'version' => WANOTIFY_VERSION
-        ]);
+        // Log inisialisasi plugin hanya jika belum dilakukan dalam sesi ini
+        if (!self::$initialization_logged) {
+            $this->logger->info('Plugin initialized', [
+                'version' => WANOTIFY_VERSION
+            ], 'initialization');
+            
+            // Set flag untuk mencegah log duplikat
+            self::$initialization_logged = true;
+        }
     }
 
     /**

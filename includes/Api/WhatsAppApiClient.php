@@ -27,11 +27,11 @@ if (!defined('ABSPATH')) {
 class WhatsAppApiClient extends ApiClient
 {
     /**
-     * API URL setting yang di-cache
+     * API URL dari konstanta
      *
      * @var string
      */
-    private $api_url = null;
+    private $api_url;
 
     /**
      * API token yang di-cache
@@ -49,11 +49,11 @@ class WhatsAppApiClient extends ApiClient
     {
         parent::__construct($logger);
 
-        // Cache pengaturan API
+        // Gunakan URL API dari konstanta
+        $this->api_url = Constants::BASE_API_URL;
+        
+        // Cache pengaturan token API
         $settings = get_option(Constants::SETTINGS_OPTION_KEY, []);
-        if (!empty($settings['api_url'])) {
-            $this->api_url = Security::sanitize_url($settings['api_url']);
-        }
         if (!empty($settings['access_token'])) {
             $this->access_token = $settings['access_token'];
         }
@@ -94,8 +94,8 @@ class WhatsAppApiClient extends ApiClient
 
         // Siapkan data untuk dikirim
         $data = [
-            'nomorTujuan' => $recipient,
-            'pesanNotifikasi' => $message
+            'phoneNumber' => $recipient,
+            'message' => $message
         ];
 
         // Tambahkan form ID jika ada
@@ -111,6 +111,19 @@ class WhatsAppApiClient extends ApiClient
 
         // Kirim request ke API
         $response = $this->send_api_request($endpoint_url, $data);
+
+        // PERUBAHAN: Tambahkan log lebih deskriptif untuk hasil pengiriman
+        if ($response['success']) {
+            $this->logger->info("Notifikasi WhatsApp berhasil dikirim ke {$recipient}", [
+                'form_id' => $form_id,
+                'message_preview' => substr($message, 0, 50) . (strlen($message) > 50 ? '...' : '')
+            ]);
+        } else {
+            $this->logger->error("Gagal mengirim notifikasi WhatsApp ke {$recipient}", [
+                'form_id' => $form_id,
+                'error' => $response['message']
+            ]);
+        }
 
         return $response;
     }
@@ -141,8 +154,8 @@ class WhatsAppApiClient extends ApiClient
 
         // Siapkan data untuk dikirim
         $data = [
-            'groupId' => $group_id,
-            'pesanNotifikasi' => $message
+            'groupID' => $group_id,
+            'message' => $message
         ];
 
         // Tambahkan form ID jika ada
@@ -294,8 +307,11 @@ class WhatsAppApiClient extends ApiClient
         $body = json_decode(wp_remote_retrieve_body($response), true);
 
         if ($status_code === 200) {
-            $this->logger->info('Request API berhasil', [
-                'response' => $body
+            // PERUBAHAN: Log yang lebih spesifik untuk respons API
+            $message = isset($body['message']) ? $body['message'] : 'No message in response';
+            $this->logger->info("API response: {$message}", [
+                'status_code' => $status_code,
+                'recipient' => isset($data['phoneNumber']) ? $data['phoneNumber'] : (isset($data['groupID']) ? 'Group:' . $data['groupID'] : 'Unknown')
             ]);
 
             return $this->format_response(true, 'Request berhasil', $body);
@@ -317,10 +333,9 @@ class WhatsAppApiClient extends ApiClient
      */
     private function verify_api_config()
     {
-        // Ambil pengaturan API jika belum di-cache
-        if (empty($this->api_url) || empty($this->access_token)) {
+        // Ambil pengaturan API token jika belum di-cache
+        if (empty($this->access_token)) {
             $settings = get_option(Constants::SETTINGS_OPTION_KEY, []);
-            $this->api_url = isset($settings['api_url']) ? Security::sanitize_url($settings['api_url']) : '';
             $this->access_token = isset($settings['access_token']) ? $settings['access_token'] : '';
         }
 
@@ -334,11 +349,6 @@ class WhatsAppApiClient extends ApiClient
      */
     private function get_config_error_response()
     {
-        if (empty($this->api_url)) {
-            $this->logger->error('API URL tidak dikonfigurasi');
-            return $this->format_response(false, 'API URL tidak dikonfigurasi');
-        }
-
         if (empty($this->access_token)) {
             $this->logger->error('Token autentikasi tidak dikonfigurasi');
             return $this->format_response(false, 'Token autentikasi tidak dikonfigurasi');

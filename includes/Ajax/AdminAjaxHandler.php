@@ -79,14 +79,6 @@ class AdminAjaxHandler extends AjaxHandler
 
         $errors = [];
 
-        // Validasi URL API
-        $api_url = isset($data['api_url']) ? $data['api_url'] : '';
-        $api_url_validation = Validator::validate_api_url($api_url);
-
-        if (!$api_url_validation['is_valid']) {
-            $errors['api_url'] = $api_url_validation['message'];
-        }
-
         // Validasi Token Autentikasi
         $access_token = isset($data['access_token']) ? $data['access_token'] : '';
         $token_validation = Validator::validate_access_token($access_token);
@@ -122,7 +114,6 @@ class AdminAjaxHandler extends AjaxHandler
 
         // Gunakan nilai yang sudah diformat
         $settings = [
-            'api_url' => $api_url_validation['formatted'],
             'access_token' => $token_validation['formatted'],
             'default_recipient' => $recipient_validation['formatted'],
             'default_template' => $template_validation['formatted'],

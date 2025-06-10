@@ -84,28 +84,42 @@
          * @returns {object} Hasil validasi
          */
         validateApiUrl: function(url) {
+            // Untuk mencegah error, periksa apakah url undefined atau null
+            if (url === undefined || url === null) {
+                return {
+                    isValid: true, // Anggap valid karena field ini sekarang otomatis dari konstanta
+                    message: "",
+                    formatted: ""
+                };
+            }
+            
             url = url.trim();
-            const result = {
-                isValid: false,
+            
+            if (url === "") {
+                return {
+                    isValid: false,
+                    message: "URL API tidak boleh kosong",
+                    formatted: url
+                };
+            }
+            
+            // Cek format URL
+            if (!/^https?:\/\/.+/i.test(url)) {
+                return {
+                    isValid: false,
+                    message: "URL harus diawali dengan http:// atau https://",
+                    formatted: url
+                };
+            }
+            
+            // Hapus trailing slash jika ada
+            const formatted = url.replace(/\/+$/, "");
+            
+            return {
+                isValid: true,
                 message: "",
-                formatted: url
+                formatted: formatted
             };
-            
-            // Cek apakah kosong
-            if (!url) {
-                result.message = "URL API tidak boleh kosong";
-                return result;
-            }
-            
-            // Regex untuk validasi URL
-            const urlPattern = /^(https?:\/\/)([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/i;
-            if (!urlPattern.test(url)) {
-                result.message = "Format URL tidak valid. URL harus diawali dengan http:// atau https://";
-                return result;
-            }
-            
-            result.isValid = true;
-            return result;
         },
         
         /**
@@ -151,27 +165,38 @@
          * @returns {object} Hasil validasi
          */
         validateAccessToken: function(token) {
+            // Pastikan token tidak undefined atau null
+            if (token === undefined || token === null) {
+                return {
+                    isValid: false,
+                    message: "Token autentikasi tidak boleh kosong",
+                    formatted: ""
+                };
+            }
+            
             token = token.trim();
-            const result = {
-                isValid: false,
+            
+            if (token === "") {
+                return {
+                    isValid: false,
+                    message: "Token autentikasi tidak boleh kosong",
+                    formatted: token
+                };
+            }
+            
+            if (token.length < 6) {
+                return {
+                    isValid: false,
+                    message: "Token autentikasi terlalu pendek (minimal 6 karakter)",
+                    formatted: token
+                };
+            }
+            
+            return {
+                isValid: true,
                 message: "",
                 formatted: token
             };
-            
-            // Cek apakah kosong
-            if (!token) {
-                result.message = "Token autentikasi tidak boleh kosong";
-                return result;
-            }
-            
-            // Hanya validasi panjang minimum
-            if (token.length < 6) {
-                result.message = "Token autentikasi terlalu pendek, minimal 6 karakter";
-                return result;
-            }
-            
-            result.isValid = true;
-            return result;
         }
     };
     

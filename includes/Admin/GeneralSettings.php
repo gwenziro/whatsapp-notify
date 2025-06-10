@@ -59,7 +59,7 @@ class GeneralSettings
     {
         $settings = get_option(Constants::SETTINGS_OPTION_KEY, array());
 
-        $api_url = isset($settings['api_url']) ? esc_url($settings['api_url']) : '';
+        // API URL sekarang menggunakan nilai konstan, jadi tidak perlu diambil dari settings
         $default_recipient = isset($settings['default_recipient']) ? sanitize_text_field($settings['default_recipient']) : '';
         $default_template = isset($settings['default_template']) ? $settings['default_template'] : Constants::DEFAULT_TEMPLATE;
         $enable_logging = isset($settings['enable_logging']) ? (bool) $settings['enable_logging'] : false;
@@ -80,13 +80,6 @@ class GeneralSettings
         }
 
         $errors = [];
-
-        // Validasi URL API
-        $api_url = isset($_POST['api_url']) ? $_POST['api_url'] : '';
-        $api_url_validation = Validator::validate_api_url($api_url);
-        if (!$api_url_validation['is_valid']) {
-            $errors['api_url'] = $api_url_validation['message'];
-        }
 
         // Validasi Token Autentikasi
         $access_token = isset($_POST['access_token']) ? $_POST['access_token'] : '';
@@ -120,7 +113,6 @@ class GeneralSettings
 
         // Gunakan nilai yang sudah diformat
         $settings = [
-            'api_url' => $api_url_validation['formatted'],
             'access_token' => $token_validation['formatted'],
             'default_recipient' => $recipient_validation['formatted'],
             'default_template' => $template_validation['formatted'],
@@ -202,26 +194,6 @@ class GeneralSettings
         $settings = get_option(Constants::SETTINGS_OPTION_KEY, []);
         $validation_results = [];
         $is_complete = true;
-
-        // Validasi URL API
-        if (empty($settings['api_url'])) {
-            $validation_results['api_url'] = [
-                'is_valid' => false,
-                'message' => 'URL API Bot WhatsApp belum dikonfigurasi',
-                'field_name' => 'URL API Bot WhatsApp'
-            ];
-            $is_complete = false;
-        } else {
-            $api_url_validation = Validator::validate_api_url($settings['api_url']);
-            if (!$api_url_validation['is_valid']) {
-                $validation_results['api_url'] = [
-                    'is_valid' => false,
-                    'message' => $api_url_validation['message'],
-                    'field_name' => 'URL API Bot WhatsApp'
-                ];
-                $is_complete = false;
-            }
-        }
 
         // Validasi Token Autentikasi
         if (empty($settings['access_token'])) {
